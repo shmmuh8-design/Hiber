@@ -131,6 +131,8 @@ button{cursor:pointer}
 .card{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
 .mono{font-family:ui-monospace,Menlo,monospace;direction:ltr;letter-spacing:.08em}
 .off{padding:8px 12px;text-align:center;font-size:.82rem;background:var(--nib-soft);color:var(--nib);font-weight:700}
+[dir=ltr] .b.me{align-self:flex-end;border-start-start-radius:18px;border-start-end-radius:6px}
+[dir=ltr] .b.them{align-self:flex-start;border-start-end-radius:18px;border-start-start-radius:6px}
 @media (prefers-reduced-motion:reduce){.b{transition:none}.banner,.pins.shake{animation:none}}
 </style>
 </head>
@@ -146,11 +148,17 @@ const app = document.getElementById('app');
 const el = (t, a = {}, ...k) => { const e = document.createElement(t); for(const [x, v] of Object.entries(a)){ if(x === 'class') e.className = v; else if(x === 'text') e.textContent = v; else if(x === 'html') e.innerHTML = v; else if(x.startsWith('on')) e[x] = v; else if(v !== false && v != null) e.setAttribute(x, v === true ? '' : v); } k.flat().forEach(c => c != null && c !== false && c !== '' && e.append(c)); return e; };
 const LOGO = '<svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="currentColor"/><path d="M24 11h16v9l7 11-15 23-15-23 7-11z" fill="#fff"/><path d="M32 33v19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="31" r="3.4" fill="currentColor"/><path d="M24 20h16" stroke="currentColor" stroke-width="2.4" opacity=".5"/><path d="M47 47c0 3-2 5-4.5 5S38 50 38 47c0-2.6 4.5-8 4.5-8s4.5 5.4 4.5 8z" fill="#fff" opacity=".85"/></svg>';
 const LS = { get(k, d){ try{ const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; }catch(e){ return d; } }, set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+const LANG = LS.get('hb-lang', 'ar');
+const EN = {"بعد القراءة": "After reading", "5 ثواني": "5 seconds", "30 ثانية": "30 seconds", "دقيقة": "1 minute", "5 دقايق": "5 minutes", "ساعة": "1 hour", "أسبوع": "1 week", "قطرة": "Drop", "ريشة": "Quill", "نغمة": "Chime", "بدون صوت": "No sound", "إعدادات قاعدة البيانات ناقصة": "Database settings are missing", "ما فيه اتصال بالإنترنت": "No internet connection", "صار خطأ، حاول مرة ثانية": "Something went wrong, try again", "الملف كبير، الحد 25 ميجا": "File too large (max 25 MB)", "ما قدرت أرفع الملف": "Couldn’t upload the file", "المرفق انحذف": "This attachment was deleted", "مستخدم حبر": "Hibr user", "ث": "s", "د": "m", "س": "h", "ي": "d", "حبر مقفل": "Hibr is locked", "ادخل رمزك عشان تفتح حبر": "Enter your passcode to open Hibr", "حبر": "Hibr", "جهات الاتصال": "Contacts", "الإعدادات": "Settings", "ما فيه اتصال بالإنترنت، بنحاول مرة ثانية…": "No internet connection, retrying…", "ما عندك محادثات للحين.": "No chats yet.", "اضغط «محادثة جديدة» واكتب اسم المستخدم حق صديقك. ": "Tap “New chat” and type your friend’s username. ", "واسمك أنت: @": "Yours is: @", "محادثة مقفلة 🔒": "Locked chat 🔒", "كل شي تلاشى ✍️": "Everything has faded ✍️", "أنت: ": "You: ", "🔒 رسالة": "🔒 Message", "📷 صورة": "📷 Photo", "🎬 فيديو": "🎬 Video", "📄 ملف": "📄 File", " · انقرت": " · Read", " · وصلت": " · Delivered", " رسالة جديدة": " new", "انقرت": "Read", "المحادثات بين شخصين بس. ما فيه مجموعات في حبر.": "Chats are one-to-one only. Hibr has no groups.", "✍️ محادثة جديدة": "✍️ New chat", "@اسم_المستخدم": "@username", "دوّر": "Search", "اكتب اسم المستخدم": "Type the username", "أدوّر…": "Searching…", "ما لقينا أحد بهذا. تأكد من الاسم، والهاتف والإيميل يشتغلون في البحث بعد ما يتأكدون.": "Nobody found. Check the username; phone and email become searchable once verified.", "احفظه باسم… (اختياري)": "Save as… (optional)", "موجود في جهات اتصالك": "Already in your contacts", "جديد": "New", "💾 احفظه وابدأ المحادثة": "💾 Save and start chatting", "✍️ محادثة جديدة / إضافة جهة اتصال": "✍️ New chat / add contact", "اكتب اسم المستخدم حق صديقك بالضبط. ما فيه مجموعات، المحادثة بينكم أنتوا الاثنين بس.": "Type your friend’s exact username. No groups: the chat is just between you two.", "انسخ اسمك، أرسله لصديقك": "Copied, send it to your friend", "اسمك أنت: @": "Your username: @", "📋 نسخ": "📋 Copy", "إلغاء": "Cancel", "🔎 دوّر في جهات اتصالك": "🔎 Search your contacts", "اسمه: ": "Name: ", "محادثة": "Chat", "تعديل": "Edit", "ما لقيت أحد بهذا الاسم.": "No one by that name.", "ما عندك جهات اتصال للحين. أضف صديق باسم المستخدم حقه.": "No contacts yet. Add a friend by their username.", "👥 جهات الاتصال": "👥 Contacts", "➕ إضافة جهة اتصال": "➕ Add contact", "📱 استيراد الأسماء من هاتفك ينضاف في تطبيق الآيفون، مع تأكيد أرقام الهواتف.": "📱 Importing your phone contacts comes with the iPhone app, along with phone verification.", "إغلاق": "Close", "الاسم": "Name", "احفظه باسم": "Save as", "الاسم هذا يطلع عندك بس، وما يشوفه هو.": "Only you see this name; they don’t.", "حفظ": "Save", "انحفظ ✅": "Saved ✅", "🗑️ احذفه من جهات الاتصال": "🗑️ Remove from contacts", "متأكد؟ اضغط مرة ثانية": "Sure? Tap again", "انحذف من جهات الاتصال": "Removed from contacts", "انسخ ✅": "Copied ✅", "ادخل رمزك عشان تفتح محادثة ": "Enter your passcode to open the chat with ", "🟢 متصل الحين": "🟢 Online", "آخر ظهور ": "Last seen ", "قبل شوي": "just now", "قبل ": "", " دقيقة": " min ago", " ساعة": " h ago", " يوم": " d ago", "🔒 ما قدرت أفتح هالرسالة (المفتاح تغيّر)": "🔒 Couldn’t open this message (key changed)", "صورة": "Photo", "فيديو": "Video", "ملف": "File", ": اضغط للفتح": ": tap to open", " · ينفتح مرة وحدة": " · opens once", "اضغط تفتحه، يختفي أول ما تقفل": "Tap to open; it vanishes when you close it", "تقدر تفتحه لين يخلص المؤقت": "You can open it until the timer ends", " · انفتح": " · Opened", " · ما انفتح للحين": " · Not opened yet", "· 👁 انقرت": "· 👁 Read", "· ✓ وصلت": "· ✓ Delivered", "رجوع": "Back", "خيارات": "Options", "🔒 مشفّرة بين هاتفك وهاتفه بس. تختفي من الجهتين بعد المؤقت": "🔒 Encrypted between your phones only. Vanishes on both sides after the timer", "⛔ حظرت ": "⛔ You blocked ", ". ما توصلك رسائله.": ". Their messages won’t reach you.", "اكتب بالحبر…": "Write in ink…", "الرسالة": "Message", "إرسال": "Send", "إرفاق صورة أو فيديو أو ملف": "Attach a photo, video or file", "ما لقيت مفتاح صديقك": "Couldn’t find your friend’s key", "أشفّر وأرفع ": "Encrypting and uploading ", "الصورة": "the photo", "الفيديو": "the video", "الملف": "the file", "انرسل ✅": "Sent ✅", "⏱ متى تختفي رسائلك هنا؟": "⏱ When should your messages vanish here?", "العد يبدأ من لحظة ما يقرأها صديقك، مو من الإرسال. «بعد القراءة» تختفي أول ما يطلع من المحادثة.": "The countdown starts when your friend reads it, not when you send. “After reading” vanishes as soon as they leave the chat.", "🔓 شيل القفل عن المحادثة": "🔓 Unlock this chat", "🔒 اقفل هالمحادثة": "🔒 Lock this chat", "انشال القفل": "Chat unlocked", "المحادثة صارت مقفلة 🔒": "Chat locked 🔒", "✏️ احفظه باسم": "✏️ Save as", "🔔 شيل الكتم": "🔔 Unmute", "🔕 كتم الإشعارات": "🔕 Mute notifications", "رجعت الإشعارات 🔔": "Notifications back on 🔔", "🔕 كتم ": "🔕 Mute ", " لمدة": " for", "8 ساعات": "8 hours", "دائمًا": "Always", "انكتمت المحادثة: ": "Chat muted: ", "🔑 رمز الأمان": "🔑 Safety number", "🔑 رمز الأمان مع ": "🔑 Safety number with ", "قارن هالرقم مع اللي عند صديقك في هاتفه. لو نفسه، يعني ما أحد بينكم يقدر يقرأ رسائلكم.": "Compare this number with the one on your friend’s phone. If they match, nobody in between can read your messages.", "تمام": "OK", "🧹 امسح المحادثة من الجهتين": "🧹 Clear chat for both", "انمسحت من الجهتين": "Cleared for both", "🚩 إبلاغ": "🚩 Report", "✅ إلغاء الحظر": "✅ Unblock", "⛔ حظر ": "⛔ Block ", "انحظر. ما توصلك رسائله": "Blocked. Their messages won’t reach you", "انشال الحظر": "Unblocked", "إزعاج أو تحرش": "Harassment", "تهديد": "Threats", "محتوى غير لائق": "Inappropriate content", "نصب أو احتيال": "Scam or fraud", "حساب مزيّف": "Fake account", "غير ذلك": "Other", "🚩 إبلاغ عن ": "🚩 Report ", "أرفق آخر رسائله النصية": "Attach their recent text messages", "الرسائل مشفّرة، فما نقدر نشوفها إلا إذا أرسلتها أنت مع البلاغ": "Messages are encrypted, so we can only see them if you send them with the report", "أرسل البلاغ": "Send report", "اختار السبب": "Pick a reason", "وصل البلاغ، نراجعه خلال 24 ساعة 🙏": "Report received, we review within 24 hours 🙏", "وتقدر بعد تحظره من نفس القائمة.": "You can also block them from the same menu.", "عرض المرفق": "View attachment", "أفتح…": "Opening…", "مرفقك": "Your attachment", "يختفي أول ما تقفل": "Vanishes when you close", "يختفي بعد ": "Vanishes ", " من أول فتح": " after first opening", "✕ قفل": "✕ Close", " كيلوبايت": " KB", "افتح الملف": "Open file", "أكّد الرمز": "Confirm passcode", "اختار رمز من 4 أرقام": "Choose a 4-digit passcode", "اكتبه مرة ثانية": "Enter it again", "هذا الرمز يفتح حبر والمحادثات المقفلة. لا تنساه.": "This passcode opens Hibr and locked chats. Don’t forget it.", "الرمزين مو نفس بعض، جرّب مرة ثانية": "The passcodes didn’t match, try again", "انحفظ الرمز ✅": "Passcode saved ✅", "مسح": "Delete", "حسابي": "My account", "اسم المستخدم: ": "Username: ", "ما حطيت": "Not set", "الهاتف: ": "Phone: ", " (يتأكد قريبًا)": " (verification coming)", "الإيميل: ": "Email: ", "انسخ اسمك، أرسله لأصدقائك": "Copied, send it to your friends", "📋 انسخ اسمك عشان يضيفونك": "📋 Copy your username so friends can add you", "🔐 الخصوصية": "🔐 Privacy", "قفل التطبيق": "App lock", "يطلب رمزك كل ما تفتح حبر": "Asks for your passcode every time you open Hibr", "انشال قفل التطبيق": "App lock turned off", "🔢 غيّر الرمز": "🔢 Change passcode", "ادخل رمزك الحالي": "Enter your current passcode", "🔒 المحادثات المقفلة: ": "🔒 Locked chats: ", "ولا وحدة": "none", "تقفل أي محادثة من ⋮ داخلها، وتنفتح برمزك بس. وما يطلع محتواها في الإشعارات.": "Lock any chat from its ⋮ menu; it opens only with your passcode and stays hidden in notifications.", "👁 الظهور": "👁 Visibility", "يظهر إني متصل الحين": "Show when I’m online", "لو قفلته ما يشوف أحد إنك فاتح حبر": "If off, nobody sees when you have Hibr open", "آخر ظهور": "Last seen", "يشوفون متى آخر مرة فتحت حبر": "Others see when you last opened Hibr", "إشعار القراءة 👁": "Read receipts 👁", "لو قفلته يشوف المرسل «وصلت» بس، بدون «انقرت» والعدّاد": "If off, senders only see “Delivered”, without “Read” and the countdown", "🔔 الإشعارات والصوت": "🔔 Notifications & sound", "الإشعارات": "Notifications", "تنبيه داخل التطبيق لما توصلك رسالة": "In-app alert when a message arrives", "إظهار نص الرسالة في الإشعار": "Show message text in notifications", "الأفضل تخليه مقفول، عشان ما أحد يقرأ رسائلك من فوق كتفك": "Best kept off so nobody reads over your shoulder", "صوت الإشعار": "Notification sound", "🔇 كتم كل الأصوات": "🔇 Mute all sounds", "الإشعارات توصل بدون صوت": "Notifications arrive silently", "⏱ المؤقت": "⏱ Timer", "المؤقت الافتراضي للمحادثات الجديدة": "Default timer for new chats", "ℹ️ عن حبر": "ℹ️ About Hibr", "🔒 رسائلك مشفّرة في هاتفك قبل ما ترسل، ومفتاحها في هاتفك بس. حتى إدارة حبر ما تقدر تقرأها.": "🔒 Messages are encrypted on your phone before sending, and the key stays on your phone. Not even Hibr can read them.", "⚠️ لو حذفت التطبيق أو غيّرت الهاتف، حسابك ومفتاحك يروحون معه، وتسجّل من جديد.": "⚠️ If you delete the app or change phones, your account and key go with it and you’ll sign up again.", "📄 الخصوصية والشروط": "📄 Privacy & terms", "للتواصل مع الإدارة: ": "Contact: ", "🗑️ حذف حسابي وكل رسائلي": "🗑️ Delete my account and all messages", "نهائي! اضغط مرة ثانية للتأكيد": "Permanent! Tap again to confirm", "مثال: سالم": "e.g. Salem", "ابدأ": "Start", "اكتب واحد على الأقل: اسم المستخدم أو الهاتف أو الإيميل": "Enter at least one: username, phone or email", "اسم المستخدم: 3 إلى 20 حرف إنجليزي أو رقم": "Username: 3–20 English letters or digits", "رقم الهاتف 8 أرقام ويبدأ بـ 9 أو 7": "Phone must be 8 digits starting with 9 or 7", "الإيميل مو صحيح": "That email doesn’t look right", "لازم توافق على الشروط": "Please accept the terms", "أجهّز مفاتيح التشفير…": "Creating encryption keys…", "هلا فيك في حبر ✍️": "Welcome to Hibr ✍️", "رسائل وصور وفيديو وملفات مشفّرة، تختفي بعد ما تنقرأ.": "Encrypted messages, photos, videos and files that vanish after they’re read.", "اسمك (يشوفه أصدقاؤك، اختياري)": "Your name (friends see it, optional)", "اسم المستخدم (عشان يلقونك فيه)": "Username (how people find you)", "رقم الهاتف (اختياري)": "Phone number (optional)", "الإيميل (اختياري)": "Email (optional)", "كلها اختيارية، بس لازم واحد على الأقل. البحث الحين يكون باسم المستخدم، والهاتف والإيميل يشتغلون في البحث بعد التأكيد في التحديث الجاي.": "All optional, but at least one is needed. Search works by username now; phone and email become searchable after verification in the next update.", "عمري 17 سنة أو أكثر، وأوافق على الشروط": "I’m 17 or older and accept the terms", "ممنوع الإساءة والتهديد والمحتوى المخالف. ": "No abuse, threats or illegal content. ", "اقرأ الشروط": "Read the terms", "حسابك انحذف من هالهاتف": "Your account was removed from this phone", "رسالة جديدة 🔒": "New message 🔒", "حبر · ": "Hibr · ", "حبر ·": "Hibr ·", "الحساب مو موجود على هالهاتف": "Account not found on this phone", "حسابك موقوف بسبب بلاغات": "Your account is suspended due to reports", "اسم المستخدم مأخوذ، جرّب غيره": "That username is taken, try another", "هذا الرقم مسجّل في حبر من قبل": "That phone is already registered", "هذا الإيميل مسجّل في حبر من قبل": "That email is already registered", "ضغط تسجيلات كثير، حاول بعد شوي": "Too many sign-ups, try again shortly", "الشخص مو موجود": "That person doesn’t exist", "رسائل كثيرة، هدّي شوي": "Too many messages, slow down", "بلاغات كثيرة اليوم": "Too many reports today"};
+const L = s => LANG === 'en' && EN[s] != null ? EN[s] : s;
+const BACK = LANG === 'en' ? '←' : '→';
+document.documentElement.lang = LANG; document.documentElement.dir = LANG === 'en' ? 'ltr' : 'rtl';
+const setLang = v => { LS.set('hb-lang', v); location.reload(); };
 const COLORS = ['#2b47c9','#1f7a55','#b4552a','#8a3fb0','#0f7c8c','#b0306a','#5a6b1f','#7a4b2a'];
 const colorOf = id => COLORS[parseInt(String(id).slice(0, 6), 16) % COLORS.length];
-const TIMERS = [[0,'بعد القراءة'], [5,'5 ثواني'], [30,'30 ثانية'], [60,'دقيقة'], [300,'5 دقايق'], [3600,'ساعة'], [604800,'أسبوع']];
+const TIMERS = [[0,L('بعد القراءة')], [5,L('5 ثواني')], [30,L('30 ثانية')], [60,L('دقيقة')], [300,L('5 دقايق')], [3600,L('ساعة')], [604800,L('أسبوع')]];
 const tName = v => (TIMERS.find(t => t[0] === v) || [, ''])[1];
-const SOUNDS = [['drop','قطرة'], ['quill','ريشة'], ['chime','نغمة'], ['none','بدون صوت']];
+const SOUNDS = [['drop',L('قطرة')], ['quill',L('ريشة')], ['chime',L('نغمة')], ['none',L('بدون صوت')]];
 
 /* ---------- state ---------- */
 let ACCT = LS.get('hb-acct', null);           // { id, secret }
@@ -166,12 +174,12 @@ const PRES = {};                               // peer id -> card (online / last
 
 /* ---------- api ---------- */
 async function rpc(fn, args){
-  if(!SB.url) throw new Error('إعدادات قاعدة البيانات ناقصة');
+  if(!SB.url) throw new Error(L('إعدادات قاعدة البيانات ناقصة'));
   let r; try{ r = await fetch(SB.url + '/rest/v1/rpc/' + fn, { method:'POST', headers:{ apikey:SB.key, 'Content-Type':'application/json' }, body:JSON.stringify(args || {}) }); }
-  catch(e){ ONLINE = false; throw new Error('ما فيه اتصال بالإنترنت'); }
+  catch(e){ ONLINE = false; throw new Error(L('ما فيه اتصال بالإنترنت')); }
   ONLINE = true;
   const t = await r.text(); let j = null; try{ j = t ? JSON.parse(t) : null; }catch(e){}
-  if(!r.ok) throw new Error((j && (j.message || j.hint)) || 'صار خطأ، حاول مرة ثانية');
+  if(!r.ok) throw new Error((j && (j.message || j.hint)) || L('صار خطأ، حاول مرة ثانية'));
   return j;
 }
 const auth = () => ({ p_id:ACCT.id, p_secret:ACCT.secret });
@@ -180,7 +188,7 @@ async function upload(bytes){
   const path = 'm/' + uuid();
   const go = h => fetch(SB.url + '/storage/v1/object/hibr/' + path, { method:'POST', headers:Object.assign({ apikey:SB.key, 'Content-Type':'application/octet-stream', 'x-upsert':'false' }, h), body:bytes });
   let r = await go({}); if(!r.ok && [400, 401, 403].includes(r.status)) r = await go({ Authorization:'Bearer ' + SB.key });
-  if(!r.ok) throw new Error(r.status === 413 ? 'الملف كبير، الحد 25 ميجا' : 'ما قدرت أرفع الملف');
+  if(!r.ok) throw new Error(r.status === 413 ? L('الملف كبير، الحد 25 ميجا') : L('ما قدرت أرفع الملف'));
   return path;
 }
 function dropMedia(paths){ paths = (paths || []).filter(Boolean); if(!paths.length) return;
@@ -218,7 +226,7 @@ async function sealFile(buf){
   return { bytes:new Uint8Array(await subtle.encrypt({ name:'AES-GCM', iv }, key, buf)), k:b64(k), iv:b64(iv) };
 }
 async function openFile(path, k, iv, type){
-  const r = await fetch(mediaUrl(path)); if(!r.ok) throw new Error('المرفق انحذف');
+  const r = await fetch(mediaUrl(path)); if(!r.ok) throw new Error(L('المرفق انحذف'));
   const key = await subtle.importKey('raw', unb64(k), 'AES-GCM', false, ['decrypt']);
   return new Blob([await subtle.decrypt({ name:'AES-GCM', iv:unb64(iv) }, key, await r.arrayBuffer())], { type:type || 'application/octet-stream' });
 }
@@ -226,12 +234,12 @@ async function fingerprint(a, b){ const d = await subtle.digest('SHA-256', new T
 async function sha(s){ const d = await subtle.digest('SHA-256', new TextEncoder().encode('hibr:' + s)); return b64(d); }
 
 /* ---------- small ui helpers ---------- */
-function toast(t){ app.querySelector('.toast')?.remove(); const e = el('div', { class:'toast', role:'status', text:t }); app.append(e); setTimeout(() => e.remove(), 2600); }
+function toast(t){ app.querySelector('.toast')?.remove(); const e = el('div', { class:'toast', role:'status', text:L(t) }); app.append(e); setTimeout(() => e.remove(), 2600); }
 function overlay(build){ const o = el('div', { class:'ov' }), s = el('div', { class:'sheet', role:'dialog' }); const close = () => o.remove(); o.onclick = e => { if(e.target === o) close(); }; build(s, close); o.append(s); app.append(o); return close; }
 function sure(e, msg, fn){ const b = e.currentTarget; if(!b.dataset.sure){ b.dataset.sure = 1; b.dataset.old = b.textContent; b.textContent = msg; setTimeout(() => { if(b.isConnected){ delete b.dataset.sure; b.textContent = b.dataset.old; } }, 3500); return; } fn(); }
-const peerName = p => p ? (p.nick || p.name || (p.username ? '@' + p.username : 'مستخدم حبر')) : 'مستخدم حبر';
+const peerName = p => p ? (p.nick || p.name || (p.username ? '@' + p.username : L('مستخدم حبر'))) : L('مستخدم حبر');
 const snow = () => Date.now() + SKEW;
-const fmtLeft = s => s < 60 ? Math.ceil(s) + 'ث' : s < 3600 ? Math.ceil(s / 60) + 'د' : s < 86400 ? Math.ceil(s / 3600) + 'س' : Math.ceil(s / 86400) + 'ي';
+const fmtLeft = s => s < 60 ? Math.ceil(s) + L('ث') : s < 3600 ? Math.ceil(s / 60) + L('د') : s < 86400 ? Math.ceil(s / 3600) + L('س') : Math.ceil(s / 86400) + L('ي');
 const leftOf = m => m.expires_at ? Math.max(0, (new Date(m.expires_at) - snow()) / 1000) : null;
 function ring(frac){ const c = 2 * Math.PI * 6; return '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="2"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="' + (c * Math.min(1, frac)).toFixed(2) + ' ' + c.toFixed(2) + '" transform="rotate(-90 8 8)" stroke-linecap="round"/></svg>'; }
 const isMuted = id => (PREFS.muted[id] || 0) > Date.now();
@@ -249,83 +257,83 @@ function render(){
   const prevScreen = render._last; render._last = VIEW.screen + ':' + VIEW.chat;
   app.querySelectorAll(':scope > :not(.ov):not(.viewer):not(.toast):not(.banner)').forEach(n => n.remove());
   if(!ACCT) return onboard();
-  if(LOCKED) return pinScreen('حبر مقفل', 'ادخل رمزك عشان تفتح حبر', () => { LOCKED = false; render(); });
+  if(LOCKED) return pinScreen(L('حبر مقفل'), L('ادخل رمزك عشان تفتح حبر'), () => { LOCKED = false; render(); });
   if(VIEW.screen === 'chat') chatScreen(keep, prevScreen === render._last ? (atBottom ? 'bottom' : top) : 'bottom');
   else if(VIEW.screen === 'settings') settingsScreen();
   else listScreen(prevScreen === render._last ? top : 0);
 }
 
 function listScreen(top){
-  const bar = el('div', { class:'bar' }, el('span', { class:'brand', html:LOGO + 'حبر' }), el('button', { class:'ib', type:'button', 'aria-label':'جهات الاتصال', text:'👥', onclick:contactsSheet }), el('button', { class:'ib', type:'button', 'aria-label':'الإعدادات', text:'⚙️', onclick:() => { VIEW = { screen:'settings' }; render(); } }));
+  const bar = el('div', { class:'bar' }, el('span', { class:'brand', html:LOGO + L('حبر') }), el('button', { class:'ib', type:'button', 'aria-label':L('جهات الاتصال'), text:'👥', onclick:contactsSheet }), el('button', { class:'ib', type:'button', 'aria-label':L('الإعدادات'), text:'⚙️', onclick:() => { VIEW = { screen:'settings' }; render(); } }));
   const sc = el('div', { class:'scroll' });
   const ids = new Set(Object.keys(PEERS));
   MSGS.forEach(m => ids.add(m.from === ACCT.id ? m.to : m.from));
   const list = [...ids].map(id => { const ms = MSGS.filter(m => m.from === id || m.to === id); return { id, ms, last:ms[ms.length - 1], n:ms.filter(m => m.from === id && !m.read_at && m.kind !== 'sys').length }; })
     .filter(x => PEERS[x.id] && (x.ms.length || PEERS[x.id].saved)).sort((a, b) => (b.last ? +new Date(b.last.created_at) : 0) - (a.last ? +new Date(a.last.created_at) : 0));
-  if(!ONLINE) sc.append(el('div', { class:'off', text:'ما فيه اتصال بالإنترنت، بنحاول مرة ثانية…' }));
-  if(!list.length) sc.append(el('div', { class:'empty' }, el('div', { style:'font-size:2.4rem', text:'✍️' }), el('p', { text:'ما عندك محادثات للحين.' }), el('p', { class:'hint', text:'اضغط «محادثة جديدة» واكتب اسم المستخدم حق صديقك. ' + (ME && ME.username ? 'واسمك أنت: @' + ME.username : '') })));
+  if(!ONLINE) sc.append(el('div', { class:'off', text:L('ما فيه اتصال بالإنترنت، بنحاول مرة ثانية…') }));
+  if(!list.length) sc.append(el('div', { class:'empty' }, el('div', { style:'font-size:2.4rem', text:'✍️' }), el('p', { text:L('ما عندك محادثات للحين.') }), el('p', { class:'hint', text:L('اضغط «محادثة جديدة» واكتب اسم المستخدم حق صديقك. ') + (ME && ME.username ? L('واسمك أنت: @') + ME.username : '') })));
   list.forEach(({ id, last, n }) => {
     const P = PEERS[id], locked = PREFS.lockedChats.includes(id);
-    const line = locked ? 'محادثة مقفلة 🔒' : !last ? 'كل شي تلاشى ✍️' : last.from === ACCT.id ? 'أنت: ' + ({ text:'🔒 رسالة', photo:'📷 صورة', video:'🎬 فيديو', file:'📄 ملف', sys:'' }[last.kind]) + (last.read_at ? ' · انقرت' : ' · وصلت') : (n ? n + ' رسالة جديدة' : 'انقرت');
+    const line = locked ? L('محادثة مقفلة 🔒') : !last ? L('كل شي تلاشى ✍️') : last.from === ACCT.id ? L('أنت: ') + ({ text:L('🔒 رسالة'), photo:L('📷 صورة'), video:L('🎬 فيديو'), file:L('📄 ملف'), sys:'' }[last.kind]) + (last.read_at ? L(' · انقرت') : L(' · وصلت')) : (n ? n + L(' رسالة جديدة') : L('انقرت'));
     sc.append(el('button', { class:'row', type:'button', onclick:() => openChat(id) },
       el('span', { class:'av', style:'background:' + colorOf(id), text:peerName(P).replace('@', '')[0] }),
       el('span', { class:'t' }, el('b', { text:peerName(P) + (P.blocked ? ' ⛔' : '') + (locked ? ' 🔒' : '') + (isMuted(id) ? ' 🔕' : '') }), el('span', { text:line })),
       n && !locked ? el('span', { class:'dot', text:n }) : null));
   });
-  if(list.length) sc.append(el('p', { class:'empty', text:'المحادثات بين شخصين بس. ما فيه مجموعات في حبر.' }));
-  app.prepend(bar, sc, el('button', { class:'fab', type:'button', text:'✍️ محادثة جديدة', onclick:newChat }));
+  if(list.length) sc.append(el('p', { class:'empty', text:L('المحادثات بين شخصين بس. ما فيه مجموعات في حبر.') }));
+  app.prepend(bar, sc, el('button', { class:'fab', type:'button', text:L('✍️ محادثة جديدة'), onclick:newChat }));
   sc.scrollTop = top;
 }
 function newChat(){
   overlay((s, close) => {
-    const q = el('input', { class:'in', id:'q', placeholder:'@اسم_المستخدم', dir:'ltr', autocapitalize:'off', autocomplete:'off' });
-    const res = el('div', { style:'display:grid;gap:6px' }), go = el('button', { class:'btn', type:'button', text:'دوّر' });
-    const find = async () => { const v = q.value.trim(); if(v.length < 3) return toast('اكتب اسم المستخدم'); go.disabled = true; res.replaceChildren(el('p', { class:'hint', text:'أدوّر…' }));
+    const q = el('input', { class:'in', id:'q', placeholder:L('@اسم_المستخدم'), dir:'ltr', autocapitalize:'off', autocomplete:'off' });
+    const res = el('div', { style:'display:grid;gap:6px' }), go = el('button', { class:'btn', type:'button', text:L('دوّر') });
+    const find = async () => { const v = q.value.trim(); if(v.length < 3) return toast(L('اكتب اسم المستخدم')); go.disabled = true; res.replaceChildren(el('p', { class:'hint', text:L('أدوّر…') }));
       try{ const r = await rpc('hb_find', Object.assign(auth(), { p_q:v })); res.replaceChildren();
-        if(!r) return res.append(el('p', { class:'hint', text:'ما لقينا أحد بهذا. تأكد من الاسم، والهاتف والإيميل يشتغلون في البحث بعد ما يتأكدون.' }));
-        const nick = el('input', { class:'in', id:'qNick', placeholder:'احفظه باسم… (اختياري)', maxlength:40, value:(PEERS[r.id] && PEERS[r.id].nick) || '' });
-        res.append(el('div', { class:'card' }, el('b', { text:(r.name || 'مستخدم حبر') + (r.username ? '  @' + r.username : '') }), el('small', { class:'sub', text:PEERS[r.id] ? 'موجود في جهات اتصالك' : 'جديد' })), nick,
-          el('button', { class:'btn', type:'button', text:'💾 احفظه وابدأ المحادثة', onclick:() => { PEERS[r.id] = Object.assign(PEERS[r.id] || {}, r, { nick:nick.value.trim() || null, saved:true }); savePeers(); close(); openChat(r.id); } }));
+        if(!r) return res.append(el('p', { class:'hint', text:L('ما لقينا أحد بهذا. تأكد من الاسم، والهاتف والإيميل يشتغلون في البحث بعد ما يتأكدون.') }));
+        const nick = el('input', { class:'in', id:'qNick', placeholder:L('احفظه باسم… (اختياري)'), maxlength:40, value:(PEERS[r.id] && PEERS[r.id].nick) || '' });
+        res.append(el('div', { class:'card' }, el('b', { text:(r.name || L('مستخدم حبر')) + (r.username ? '  @' + r.username : '') }), el('small', { class:'sub', text:PEERS[r.id] ? L('موجود في جهات اتصالك') : L('جديد') })), nick,
+          el('button', { class:'btn', type:'button', text:L('💾 احفظه وابدأ المحادثة'), onclick:() => { PEERS[r.id] = Object.assign(PEERS[r.id] || {}, r, { nick:nick.value.trim() || null, saved:true }); savePeers(); close(); openChat(r.id); } }));
       }catch(e){ res.replaceChildren(el('p', { class:'hint', text:e.message })); } go.disabled = false; };
     go.onclick = find; q.onkeydown = e => { if(e.key === 'Enter') find(); };
-    s.append(el('h3', { text:'✍️ محادثة جديدة / إضافة جهة اتصال' }), el('p', { class:'hint', text:'اكتب اسم المستخدم حق صديقك بالضبط. ما فيه مجموعات، المحادثة بينكم أنتوا الاثنين بس.' }), q, go, res,
-      ME && ME.username ? el('button', { class:'opt', type:'button', onclick:() => copy('@' + ME.username, 'انسخ اسمك، أرسله لصديقك') }, el('span', { text:'اسمك أنت: @' + ME.username }), el('span', { class:'hint', text:'📋 نسخ' })) : null,
-      el('button', { class:'btn ghost', type:'button', text:'إلغاء', onclick:close }));
+    s.append(el('h3', { text:L('✍️ محادثة جديدة / إضافة جهة اتصال') }), el('p', { class:'hint', text:L('اكتب اسم المستخدم حق صديقك بالضبط. ما فيه مجموعات، المحادثة بينكم أنتوا الاثنين بس.') }), q, go, res,
+      ME && ME.username ? el('button', { class:'opt', type:'button', onclick:() => copy('@' + ME.username, L('انسخ اسمك، أرسله لصديقك')) }, el('span', { text:L('اسمك أنت: @') + ME.username }), el('span', { class:'hint', text:L('📋 نسخ') })) : null,
+      el('button', { class:'btn ghost', type:'button', text:L('إلغاء'), onclick:close }));
     setTimeout(() => q.focus(), 60);
   });
 }
 function contactsSheet(){
   overlay((s, close) => {
-    const q = el('input', { class:'in', id:'cq', placeholder:'🔎 دوّر في جهات اتصالك', autocomplete:'off' }), box = el('div', { style:'display:grid;gap:6px' });
+    const q = el('input', { class:'in', id:'cq', placeholder:L('🔎 دوّر في جهات اتصالك'), autocomplete:'off' }), box = el('div', { style:'display:grid;gap:6px' });
     const draw = () => { const v = q.value.trim().toLowerCase();
       const list = Object.values(PEERS).filter(p => p.saved || MSGS.some(m => m.from === p.id || m.to === p.id)).filter(p => !v || [p.nick, p.name, p.username].some(x => x && x.toLowerCase().includes(v.replace(/^@/, '')))).sort((a, b) => peerName(a).localeCompare(peerName(b), 'ar'));
       box.replaceChildren(...(list.length ? list.map(p => el('div', { class:'row', style:'border:1px solid var(--rule);border-radius:14px;padding:8px 10px' },
         el('span', { class:'av', style:'width:40px;height:40px;background:' + colorOf(p.id), text:peerName(p).replace('@', '')[0] }),
-        el('span', { class:'t' }, el('b', { text:peerName(p) + (p.blocked ? ' ⛔' : '') }), el('span', { text:[p.username ? '@' + p.username : '', p.nick && p.name ? 'اسمه: ' + p.name : ''].filter(Boolean).join(' · ') })),
-        el('button', { class:'ib', type:'button', 'aria-label':'محادثة', text:'💬', onclick:() => { close(); openChat(p.id); } }),
-        el('button', { class:'ib', type:'button', 'aria-label':'تعديل', text:'✏️', onclick:() => { close(); editContact(p.id); } }))) : [el('p', { class:'hint', text:v ? 'ما لقيت أحد بهذا الاسم.' : 'ما عندك جهات اتصال للحين. أضف صديق باسم المستخدم حقه.' })])); };
+        el('span', { class:'t' }, el('b', { text:peerName(p) + (p.blocked ? ' ⛔' : '') }), el('span', { text:[p.username ? '@' + p.username : '', p.nick && p.name ? L('اسمه: ') + p.name : ''].filter(Boolean).join(' · ') })),
+        el('button', { class:'ib', type:'button', 'aria-label':L('محادثة'), text:'💬', onclick:() => { close(); openChat(p.id); } }),
+        el('button', { class:'ib', type:'button', 'aria-label':L('تعديل'), text:'✏️', onclick:() => { close(); editContact(p.id); } }))) : [el('p', { class:'hint', text:v ? L('ما لقيت أحد بهذا الاسم.') : L('ما عندك جهات اتصال للحين. أضف صديق باسم المستخدم حقه.') })])); };
     q.oninput = draw; draw();
-    s.append(el('h3', { text:'👥 جهات الاتصال' }), q, box,
-      el('button', { class:'btn', type:'button', text:'➕ إضافة جهة اتصال', onclick:() => { close(); newChat(); } }),
-      el('p', { class:'hint', text:'📱 استيراد الأسماء من هاتفك ينضاف في تطبيق الآيفون، مع تأكيد أرقام الهواتف.' }),
-      el('button', { class:'btn ghost', type:'button', text:'إغلاق', onclick:close }));
+    s.append(el('h3', { text:L('👥 جهات الاتصال') }), q, box,
+      el('button', { class:'btn', type:'button', text:L('➕ إضافة جهة اتصال'), onclick:() => { close(); newChat(); } }),
+      el('p', { class:'hint', text:L('📱 استيراد الأسماء من هاتفك ينضاف في تطبيق الآيفون، مع تأكيد أرقام الهواتف.') }),
+      el('button', { class:'btn ghost', type:'button', text:L('إغلاق'), onclick:close }));
   });
 }
 function editContact(id){
   const P = PEERS[id];
   overlay((s, close) => {
-    const nick = el('input', { class:'in', id:'eNick', placeholder:P.name || 'الاسم', maxlength:40, value:P.nick || '' });
-    s.append(el('h3', { text:'✏️ ' + peerName(P) }), el('div', { class:'f' }, el('label', { for:'eNick', text:'احفظه باسم' }), nick),
-      el('p', { class:'hint', text:'الاسم هذا يطلع عندك بس، وما يشوفه هو.' }),
-      el('button', { class:'btn', type:'button', text:'حفظ', onclick:() => { P.nick = nick.value.trim() || null; P.saved = true; savePeers(); close(); render(); toast('انحفظ ✅'); } }),
-      el('button', { class:'opt bad', type:'button', text:'🗑️ احذفه من جهات الاتصال', onclick:e => sure(e, 'متأكد؟ اضغط مرة ثانية', () => { if(MSGS.some(m => m.from === id || m.to === id)){ P.saved = false; P.nick = null; } else delete PEERS[id]; savePeers(); close(); render(); toast('انحذف من جهات الاتصال'); }) }),
-      el('button', { class:'btn ghost', type:'button', text:'إلغاء', onclick:close }));
+    const nick = el('input', { class:'in', id:'eNick', placeholder:P.name || L('الاسم'), maxlength:40, value:P.nick || '' });
+    s.append(el('h3', { text:'✏️ ' + peerName(P) }), el('div', { class:'f' }, el('label', { for:'eNick', text:L('احفظه باسم') }), nick),
+      el('p', { class:'hint', text:L('الاسم هذا يطلع عندك بس، وما يشوفه هو.') }),
+      el('button', { class:'btn', type:'button', text:L('حفظ'), onclick:() => { P.nick = nick.value.trim() || null; P.saved = true; savePeers(); close(); render(); toast(L('انحفظ ✅')); } }),
+      el('button', { class:'opt bad', type:'button', text:L('🗑️ احذفه من جهات الاتصال'), onclick:e => sure(e, L('متأكد؟ اضغط مرة ثانية'), () => { if(MSGS.some(m => m.from === id || m.to === id)){ P.saved = false; P.nick = null; } else delete PEERS[id]; savePeers(); close(); render(); toast(L('انحذف من جهات الاتصال')); }) }),
+      el('button', { class:'btn ghost', type:'button', text:L('إلغاء'), onclick:close }));
   });
 }
-function copy(t, msg){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast(msg || 'انسخ ✅'), () => toast(t)); }
+function copy(t, msg){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast(msg || L('انسخ ✅')), () => toast(t)); }
 function openChat(id){
   const go = () => { VIEW = { screen:'chat', chat:id }; render(); markRead(); refreshPeer(id); };
-  if(PREFS.lockedChats.includes(id) && !OPEN.has(id)) return pinScreen('محادثة مقفلة 🔒', 'ادخل رمزك عشان تفتح محادثة ' + peerName(PEERS[id]), () => { OPEN.add(id); go(); }, () => render());
+  if(PREFS.lockedChats.includes(id) && !OPEN.has(id)) return pinScreen(L('محادثة مقفلة 🔒'), L('ادخل رمزك عشان تفتح محادثة ') + peerName(PEERS[id]), () => { OPEN.add(id); go(); }, () => render());
   go();
 }
 function leaveChat(){
@@ -337,53 +345,53 @@ function finishRead(id){
   if(!done.length) return;
   done.forEach(vanishId); rpc('hb_done', Object.assign(auth(), { p_ids:done })).catch(() => {});
 }
-function presence(id){ const c = PRES[id]; if(!c) return ''; if(c.online) return '🟢 متصل الحين'; if(c.last_seen){ const m = Math.round((snow() - new Date(c.last_seen)) / 60000); return 'آخر ظهور ' + (m < 1 ? 'قبل شوي' : m < 60 ? 'قبل ' + m + ' دقيقة' : m < 1440 ? 'قبل ' + Math.round(m / 60) + ' ساعة' : 'قبل ' + Math.round(m / 1440) + ' يوم'); } return ''; }
+function presence(id){ const c = PRES[id]; if(!c) return ''; if(c.online) return L('🟢 متصل الحين'); if(c.last_seen){ const m = Math.round((snow() - new Date(c.last_seen)) / 60000); return L('آخر ظهور ') + (m < 1 ? L('قبل شوي') : m < 60 ? L('قبل ') + m + L(' دقيقة') : m < 1440 ? L('قبل ') + Math.round(m / 60) + L(' ساعة') : L('قبل ') + Math.round(m / 1440) + L(' يوم')); } return ''; }
 async function refreshPeer(id){ try{ const r = await rpc('hb_peers', Object.assign(auth(), { p_ids:[id] })); if(r && r[0]){ PRES[id] = r[0]; const P = PEERS[id]; if(P && r[0].pubkey !== P.pubkey){ P.pubkey = r[0].pubkey; savePeers(); } const s = app.querySelector('#pres'); if(s) s.textContent = presence(id); } }catch(e){} }
 
 function bubble(m){
   if(m.kind === 'sys') return el('div', { class:'sys', text:(PLAIN.get(m.id) || {}).t || '' });
   const mine = m.from === ACCT.id, b = el('div', { class:'b ' + (mine ? 'me' : 'them'), 'data-id':m.id }), P = PLAIN.get(m.id);
-  if(!P) b.append(el('p', { text:'🔒 ما قدرت أفتح هالرسالة (المفتاح تغيّر)' }));
+  if(!P) b.append(el('p', { text:L('🔒 ما قدرت أفتح هالرسالة (المفتاح تغيّر)') }));
   else if(m.kind === 'text') b.append(el('p', { text:P.t }));
   else {
-    const ic = { photo:'📷', video:'🎬', file:'📄' }[m.kind], lbl = { photo:'صورة', video:'فيديو', file:'ملف' }[m.kind];
-    if(!mine && !m.read_at) b.append(el('button', { class:'tile', type:'button', onclick:() => viewMedia(m) }, el('i', { text:ic }), el('span', {}, lbl + ': اضغط للفتح', el('small', { text:(P.name || '') + ' · ينفتح مرة وحدة' }))));
-    else if(!mine) b.append(el('button', { class:'tile', type:'button', onclick:() => viewMedia(m) }, el('i', { text:ic }), el('span', {}, lbl, el('small', { text:(P.name || '') + ' · ' + (m.timer === 0 ? 'اضغط تفتحه، يختفي أول ما تقفل' : 'تقدر تفتحه لين يخلص المؤقت') }))));
-    else b.append(el('div', { class:'tile' }, el('i', { text:ic }), el('span', {}, lbl, el('small', { text:(P.name || '') + (m.read_at ? ' · انفتح' : ' · ما انفتح للحين') }))));
+    const ic = { photo:'📷', video:'🎬', file:'📄' }[m.kind], lbl = { photo:L('صورة'), video:L('فيديو'), file:L('ملف') }[m.kind];
+    if(!mine && !m.read_at) b.append(el('button', { class:'tile', type:'button', onclick:() => viewMedia(m) }, el('i', { text:ic }), el('span', {}, lbl + L(': اضغط للفتح'), el('small', { text:(P.name || '') + L(' · ينفتح مرة وحدة') }))));
+    else if(!mine) b.append(el('button', { class:'tile', type:'button', onclick:() => viewMedia(m) }, el('i', { text:ic }), el('span', {}, lbl, el('small', { text:(P.name || '') + ' · ' + (m.timer === 0 ? L('اضغط تفتحه، يختفي أول ما تقفل') : L('تقدر تفتحه لين يخلص المؤقت')) }))));
+    else b.append(el('div', { class:'tile' }, el('i', { text:ic }), el('span', {}, lbl, el('small', { text:(P.name || '') + (m.read_at ? L(' · انفتح') : L(' · ما انفتح للحين')) }))));
   }
   const l = leftOf(m);
   b.append(el('div', { class:'meta' }, l != null ? el('span', { class:'cd', 'data-cd':m.id, html:ring(l / (m.timer || 1)) + fmtLeft(l) }) : el('span', { class:'cd', text:'⏱ ' + tName(m.timer) }),
-    mine ? el('span', { text:m.read_at ? '· 👁 انقرت' : '· ✓ وصلت' }) : null));
+    mine ? el('span', { text:m.read_at ? L('· 👁 انقرت') : L('· ✓ وصلت') }) : null));
   return b;
 }
 function chatScreen(keep, scrollTo){
   const id = VIEW.chat, P = PEERS[id] || {};
   const bar = el('div', { class:'bar' },
-    el('button', { class:'ib', type:'button', 'aria-label':'رجوع', text:'→', onclick:leaveChat }),
+    el('button', { class:'ib', type:'button', 'aria-label':L('رجوع'), text:BACK, onclick:leaveChat }),
     el('span', { class:'av', style:'width:38px;height:38px;background:' + colorOf(id), text:peerName(P).replace('@', '')[0] }),
     el('h2', {}, peerName(P), el('span', { class:'sub', id:'pres', text:presence(id) })),
-    el('button', { class:'ib', type:'button', 'aria-label':'خيارات', text:'⋮', onclick:() => chatMenu(id) }));
+    el('button', { class:'ib', type:'button', 'aria-label':L('خيارات'), text:'⋮', onclick:() => chatMenu(id) }));
   const sc = el('div', { class:'scroll' }), box = el('div', { class:'msgs' });
-  box.append(el('div', { class:'sys', text:'🔒 مشفّرة بين هاتفك وهاتفه بس. تختفي من الجهتين بعد المؤقت' }));
+  box.append(el('div', { class:'sys', text:L('🔒 مشفّرة بين هاتفك وهاتفه بس. تختفي من الجهتين بعد المؤقت') }));
   MSGS.filter(m => m.from === id || m.to === id).forEach(m => box.append(bubble(m)));
-  if(P.blocked) box.append(el('div', { class:'sys', text:'⛔ حظرت ' + peerName(P) + '. ما توصلك رسائله.' }));
+  if(P.blocked) box.append(el('div', { class:'sys', text:L('⛔ حظرت ') + peerName(P) + L('. ما توصلك رسائله.') }));
   sc.append(box);
   const timer = PREFS.chatTimer[id] ?? PREFS.def;
-  const inp = el('textarea', { id:'msg', rows:1, placeholder:'اكتب بالحبر…', 'aria-label':'الرسالة' }); inp.value = keep;
+  const inp = el('textarea', { id:'msg', rows:1, placeholder:L('اكتب بالحبر…'), 'aria-label':L('الرسالة') }); inp.value = keep;
   inp.oninput = () => { inp.style.height = 'auto'; inp.style.height = Math.min(120, inp.scrollHeight) + 'px'; };
-  const sendBtn = el('button', { class:'send', type:'button', 'aria-label':'إرسال', text:'↑' });
+  const sendBtn = el('button', { class:'send', type:'button', 'aria-label':L('إرسال'), text:'↑' });
   const file = el('input', { type:'file', hidden:true, id:'file', onchange:e => { const f = e.target.files[0]; e.target.value = ''; if(f) sendFile(id, f); } });
   sendBtn.onclick = async () => { const v = inp.value.trim(); if(!v) return; sendBtn.disabled = true; inp.value = ''; inp.style.height = 'auto'; try{ await sendMsg(id, 'text', { t:v }); }catch(e){ toast(e.message); const n = app.querySelector('#msg'); if(n && !n.value) n.value = v; } sendBtn.disabled = false; app.querySelector('#msg')?.focus(); };
   inp.onkeydown = e => { if(e.key === 'Enter' && !e.shiftKey && !NATIVE && matchMedia('(pointer:fine)').matches){ e.preventDefault(); sendBtn.click(); } };
   const comp = el('div', { class:'composer' },
-    el('button', { class:'ib', type:'button', 'aria-label':'إرفاق صورة أو فيديو أو ملف', text:'📎', onclick:() => file.click() }), file,
+    el('button', { class:'ib', type:'button', 'aria-label':L('إرفاق صورة أو فيديو أو ملف'), text:'📎', onclick:() => file.click() }), file,
     el('button', { class:'timer', type:'button', text:'⏱ ' + tName(timer), onclick:() => pickTimer(id) }), inp, sendBtn);
   app.prepend(bar, sc, comp);
   if(P.blocked) comp.hidden = true;
   requestAnimationFrame(() => { sc.scrollTop = scrollTo === 'bottom' ? sc.scrollHeight : scrollTo; });
 }
 async function sendMsg(id, kind, payload, media){
-  const P = PEERS[id]; if(!P || !P.pubkey) throw new Error('ما لقيت مفتاح صديقك');
+  const P = PEERS[id]; if(!P || !P.pubkey) throw new Error(L('ما لقيت مفتاح صديقك'));
   const timer = kind === 'sys' ? 0 : (PREFS.chatTimer[id] ?? PREFS.def);
   const body = await seal(P.pubkey, payload);
   const r = await rpc('hb_send', Object.assign(auth(), { p_to:id, p_kind:kind, p_body:body, p_timer:timer, p_media:media || null }));
@@ -392,17 +400,17 @@ async function sendMsg(id, kind, payload, media){
   render();
 }
 async function sendFile(id, f){
-  if(f.size > 25 * 1024 * 1024) return toast('الملف كبير، الحد 25 ميجا');
+  if(f.size > 25 * 1024 * 1024) return toast(L('الملف كبير، الحد 25 ميجا'));
   const kind = f.type.startsWith('image/') ? 'photo' : f.type.startsWith('video/') ? 'video' : 'file';
-  toast('أشفّر وأرفع ' + ({ photo:'الصورة', video:'الفيديو', file:'الملف' }[kind]) + '…');
+  toast(L('أشفّر وأرفع ') + ({ photo:L('الصورة'), video:L('الفيديو'), file:L('الملف') }[kind]) + '…');
   try{ const enc = await sealFile(await f.arrayBuffer()); const path = await upload(enc.bytes);
-    await sendMsg(id, kind, { name:f.name, type:f.type, size:f.size, k:enc.k, iv:enc.iv }, path); toast('انرسل ✅'); }
+    await sendMsg(id, kind, { name:f.name, type:f.type, size:f.size, k:enc.k, iv:enc.iv }, path); toast(L('انرسل ✅')); }
   catch(e){ toast(e.message); }
 }
 function pickTimer(id){
   overlay((s, close) => {
     const cur = PREFS.chatTimer[id] ?? PREFS.def;
-    s.append(el('h3', { text:'⏱ متى تختفي رسائلك هنا؟' }), el('p', { class:'hint', text:'العد يبدأ من لحظة ما يقرأها صديقك، مو من الإرسال. «بعد القراءة» تختفي أول ما يطلع من المحادثة.' }),
+    s.append(el('h3', { text:L('⏱ متى تختفي رسائلك هنا؟') }), el('p', { class:'hint', text:L('العد يبدأ من لحظة ما يقرأها صديقك، مو من الإرسال. «بعد القراءة» تختفي أول ما يطلع من المحادثة.') }),
       el('div', { class:'grid2' }, TIMERS.map(([v, n]) => el('button', { class:'opt', type:'button', 'aria-pressed':String(cur === v), text:n, onclick:() => { PREFS.chatTimer[id] = v; savePrefs(); close(); render(); } }))));
   });
 }
@@ -411,47 +419,47 @@ function chatMenu(id){
   overlay((s, close) => {
     const locked = PREFS.lockedChats.includes(id);
     s.append(el('h3', { text:peerName(P) + (P.username ? ' · @' + P.username : '') }),
-      el('button', { class:'opt', type:'button', text:locked ? '🔓 شيل القفل عن المحادثة' : '🔒 اقفل هالمحادثة', onclick:() => { close(); needPin(() => { if(locked) PREFS.lockedChats = PREFS.lockedChats.filter(x => x !== id); else { PREFS.lockedChats.push(id); OPEN.add(id); } savePrefs(); render(); toast(locked ? 'انشال القفل' : 'المحادثة صارت مقفلة 🔒'); }); } }),
-      el('button', { class:'opt', type:'button', text:'✏️ احفظه باسم', onclick:() => { close(); editContact(id); } }),
-      el('button', { class:'opt', type:'button', text:isMuted(id) ? '🔔 شيل الكتم' : '🔕 كتم الإشعارات', onclick:() => { close(); if(isMuted(id)){ delete PREFS.muted[id]; savePrefs(); render(); return toast('رجعت الإشعارات 🔔'); }
-        overlay((s2, c2) => s2.append(el('h3', { text:'🔕 كتم ' + peerName(P) + ' لمدة' }), el('div', { class:'grid2' }, [['ساعة', 3600e3], ['8 ساعات', 8 * 3600e3], ['أسبوع', 7 * 864e5], ['دائمًا', 1e14]].map(([n, ms]) => el('button', { class:'opt', type:'button', text:n, onclick:() => { PREFS.muted[id] = Date.now() + ms; savePrefs(); c2(); render(); toast('انكتمت المحادثة: ' + n); } }))), el('button', { class:'btn ghost', type:'button', text:'إلغاء', onclick:c2 }))); } }),
-      el('button', { class:'opt', type:'button', text:'🔑 رمز الأمان', onclick:async () => { const fp = await fingerprint(KEYS.pub, P.pubkey); close(); overlay((s2, c2) => s2.append(el('h3', { text:'🔑 رمز الأمان مع ' + peerName(P) }), el('p', { class:'hint', text:'قارن هالرقم مع اللي عند صديقك في هاتفه. لو نفسه، يعني ما أحد بينكم يقدر يقرأ رسائلكم.' }), el('div', { class:'card mono', style:'font-size:1.2rem;text-align:center', text:fp }), el('button', { class:'btn ghost', type:'button', text:'تمام', onclick:c2 }))); } }),
-      el('button', { class:'opt', type:'button', text:'🧹 امسح المحادثة من الجهتين', onclick:e => sure(e, 'متأكد؟ اضغط مرة ثانية', async () => { close(); try{ const media = await rpc('hb_clear', Object.assign(auth(), { p_peer:id })); dropMedia(media); MSGS = MSGS.filter(m => m.from !== id && m.to !== id); render(); toast('انمسحت من الجهتين'); }catch(er){ toast(er.message); } }) }),
-      el('button', { class:'opt bad', type:'button', text:'🚩 إبلاغ', onclick:() => { close(); reportSheet(id); } }),
-      el('button', { class:'opt bad', type:'button', text:P.blocked ? '✅ إلغاء الحظر' : '⛔ حظر ' + peerName(P), onclick:async () => { close(); try{ await rpc('hb_block', Object.assign(auth(), { p_target:id, p_on:!P.blocked })); P.blocked = !P.blocked; savePeers(); render(); toast(P.blocked ? 'انحظر. ما توصلك رسائله' : 'انشال الحظر'); }catch(er){ toast(er.message); } } }),
-      el('button', { class:'btn ghost', type:'button', text:'إغلاق', onclick:close }));
+      el('button', { class:'opt', type:'button', text:locked ? L('🔓 شيل القفل عن المحادثة') : L('🔒 اقفل هالمحادثة'), onclick:() => { close(); needPin(() => { if(locked) PREFS.lockedChats = PREFS.lockedChats.filter(x => x !== id); else { PREFS.lockedChats.push(id); OPEN.add(id); } savePrefs(); render(); toast(locked ? L('انشال القفل') : L('المحادثة صارت مقفلة 🔒')); }); } }),
+      el('button', { class:'opt', type:'button', text:L('✏️ احفظه باسم'), onclick:() => { close(); editContact(id); } }),
+      el('button', { class:'opt', type:'button', text:isMuted(id) ? L('🔔 شيل الكتم') : L('🔕 كتم الإشعارات'), onclick:() => { close(); if(isMuted(id)){ delete PREFS.muted[id]; savePrefs(); render(); return toast(L('رجعت الإشعارات 🔔')); }
+        overlay((s2, c2) => s2.append(el('h3', { text:L('🔕 كتم ') + peerName(P) + L(' لمدة') }), el('div', { class:'grid2' }, [[L('ساعة'), 3600e3], [L('8 ساعات'), 8 * 3600e3], [L('أسبوع'), 7 * 864e5], [L('دائمًا'), 1e14]].map(([n, ms]) => el('button', { class:'opt', type:'button', text:n, onclick:() => { PREFS.muted[id] = Date.now() + ms; savePrefs(); c2(); render(); toast(L('انكتمت المحادثة: ') + n); } }))), el('button', { class:'btn ghost', type:'button', text:L('إلغاء'), onclick:c2 }))); } }),
+      el('button', { class:'opt', type:'button', text:L('🔑 رمز الأمان'), onclick:async () => { const fp = await fingerprint(KEYS.pub, P.pubkey); close(); overlay((s2, c2) => s2.append(el('h3', { text:L('🔑 رمز الأمان مع ') + peerName(P) }), el('p', { class:'hint', text:L('قارن هالرقم مع اللي عند صديقك في هاتفه. لو نفسه، يعني ما أحد بينكم يقدر يقرأ رسائلكم.') }), el('div', { class:'card mono', style:'font-size:1.2rem;text-align:center', text:fp }), el('button', { class:'btn ghost', type:'button', text:L('تمام'), onclick:c2 }))); } }),
+      el('button', { class:'opt', type:'button', text:L('🧹 امسح المحادثة من الجهتين'), onclick:e => sure(e, L('متأكد؟ اضغط مرة ثانية'), async () => { close(); try{ const media = await rpc('hb_clear', Object.assign(auth(), { p_peer:id })); dropMedia(media); MSGS = MSGS.filter(m => m.from !== id && m.to !== id); render(); toast(L('انمسحت من الجهتين')); }catch(er){ toast(er.message); } }) }),
+      el('button', { class:'opt bad', type:'button', text:L('🚩 إبلاغ'), onclick:() => { close(); reportSheet(id); } }),
+      el('button', { class:'opt bad', type:'button', text:P.blocked ? L('✅ إلغاء الحظر') : L('⛔ حظر ') + peerName(P), onclick:async () => { close(); try{ await rpc('hb_block', Object.assign(auth(), { p_target:id, p_on:!P.blocked })); P.blocked = !P.blocked; savePeers(); render(); toast(P.blocked ? L('انحظر. ما توصلك رسائله') : L('انشال الحظر')); }catch(er){ toast(er.message); } } }),
+      el('button', { class:'btn ghost', type:'button', text:L('إغلاق'), onclick:close }));
   });
 }
 function reportSheet(id){
   const P = PEERS[id];
   overlay((s, close) => {
-    let why = ''; const reasons = ['إزعاج أو تحرش', 'تهديد', 'محتوى غير لائق', 'نصب أو احتيال', 'حساب مزيّف', 'غير ذلك'];
+    let why = ''; const reasons = [L('إزعاج أو تحرش'), L('تهديد'), L('محتوى غير لائق'), L('نصب أو احتيال'), L('حساب مزيّف'), L('غير ذلك')];
     const ch = el('div', { class:'chips' }), withMsgs = el('input', { type:'checkbox', checked:true, id:'rpM' });
     const draw = () => ch.replaceChildren(...reasons.map(r => el('button', { class:'chip', type:'button', 'aria-pressed':String(why === r), text:r, onclick:() => { why = r; draw(); } }))); draw();
-    s.append(el('h3', { text:'🚩 إبلاغ عن ' + peerName(P) }), ch,
-      el('label', { class:'tg' }, el('span', {}, 'أرفق آخر رسائله النصية', el('small', { text:'الرسائل مشفّرة، فما نقدر نشوفها إلا إذا أرسلتها أنت مع البلاغ' })), withMsgs),
-      el('button', { class:'btn', type:'button', text:'أرسل البلاغ', onclick:async () => {
-        if(!why) return toast('اختار السبب');
+    s.append(el('h3', { text:L('🚩 إبلاغ عن ') + peerName(P) }), ch,
+      el('label', { class:'tg' }, el('span', {}, L('أرفق آخر رسائله النصية'), el('small', { text:L('الرسائل مشفّرة، فما نقدر نشوفها إلا إذا أرسلتها أنت مع البلاغ') })), withMsgs),
+      el('button', { class:'btn', type:'button', text:L('أرسل البلاغ'), onclick:async () => {
+        if(!why) return toast(L('اختار السبب'));
         const ev = withMsgs.checked ? MSGS.filter(m => m.from === id && m.kind === 'text').slice(-8).map(m => '• ' + ((PLAIN.get(m.id) || {}).t || '')).join('\n') : '';
-        try{ await rpc('hb_report', Object.assign(auth(), { p_target:id, p_reason:why, p_evidence:ev })); close(); toast('وصل البلاغ، نراجعه خلال 24 ساعة 🙏'); }catch(e){ toast(e.message); } } }),
-      el('p', { class:'hint', text:'وتقدر بعد تحظره من نفس القائمة.' }),
-      el('button', { class:'btn ghost', type:'button', text:'إلغاء', onclick:close }));
+        try{ await rpc('hb_report', Object.assign(auth(), { p_target:id, p_reason:why, p_evidence:ev })); close(); toast(L('وصل البلاغ، نراجعه خلال 24 ساعة 🙏')); }catch(e){ toast(e.message); } } }),
+      el('p', { class:'hint', text:L('وتقدر بعد تحظره من نفس القائمة.') }),
+      el('button', { class:'btn ghost', type:'button', text:L('إلغاء'), onclick:close }));
   });
 }
 async function viewMedia(m){
   const P = PLAIN.get(m.id); if(!P) return;
-  const v = el('div', { class:'viewer', role:'dialog', 'aria-label':'عرض المرفق' }), stage = el('div', { class:'stage', text:'أفتح…' });
+  const v = el('div', { class:'viewer', role:'dialog', 'aria-label':L('عرض المرفق') }), stage = el('div', { class:'stage', text:L('أفتح…') });
   let url = null;
   const close = () => { v.remove(); if(url) URL.revokeObjectURL(url); if(m.from !== ACCT.id && m.timer === 0){ vanishId(m.id); rpc('hb_done', Object.assign(auth(), { p_ids:[m.id] })).catch(() => {}); dropMedia([m.media]); } };
-  const info = m.from === ACCT.id ? 'مرفقك' : m.timer === 0 ? 'يختفي أول ما تقفل' : 'يختفي بعد ' + tName(m.timer) + ' من أول فتح';
-  v.append(el('header', {}, el('button', { class:'x', type:'button', text:'✕ قفل', onclick:close }), el('span', { style:'flex:1' }), el('span', { style:'font-size:.85rem;opacity:.85', text:'⏱ ' + info })), stage);
+  const info = m.from === ACCT.id ? L('مرفقك') : m.timer === 0 ? L('يختفي أول ما تقفل') : L('يختفي بعد ') + tName(m.timer) + L(' من أول فتح');
+  v.append(el('header', {}, el('button', { class:'x', type:'button', text:L('✕ قفل'), onclick:close }), el('span', { style:'flex:1' }), el('span', { style:'font-size:.85rem;opacity:.85', text:'⏱ ' + info })), stage);
   app.append(v);
   if(m.from !== ACCT.id && !m.read_at){ m.read_at = new Date(snow()).toISOString(); if(m.timer) m.expires_at = new Date(snow() + m.timer * 1000).toISOString(); rpc('hb_read', Object.assign(auth(), { p_ids:[m.id] })).catch(() => {}); }
   try{
     const blob = await openFile(m.media, P.k, P.iv, P.type); url = URL.createObjectURL(blob); stage.replaceChildren();
     if(m.kind === 'photo') stage.append(el('img', { src:url, alt:P.name || '' }));
     else if(m.kind === 'video') stage.append(el('video', { src:url, controls:true, playsinline:true, autoplay:true }));
-    else stage.append(el('div', { style:'text-align:center;display:grid;gap:10px;justify-items:center' }, el('div', { style:'font-size:3rem', text:'📄' }), el('b', { text:P.name }), el('span', { style:'opacity:.7;font-size:.85rem', text:Math.round((P.size || 0) / 1024) + ' كيلوبايت' }), el('a', { href:url, target:'_blank', rel:'noopener', text:'افتح الملف' })));
+    else stage.append(el('div', { style:'text-align:center;display:grid;gap:10px;justify-items:center' }, el('div', { style:'font-size:3rem', text:'📄' }), el('b', { text:P.name }), el('span', { style:'opacity:.7;font-size:.85rem', text:Math.round((P.size || 0) / 1024) + L(' كيلوبايت') }), el('a', { href:url, target:'_blank', rel:'noopener', text:L('افتح الملف') })));
   }catch(e){ stage.textContent = e.message; }
 }
 function needPin(then){
@@ -460,10 +468,10 @@ function needPin(then){
 }
 function setPin(then){
   let first = null;
-  const step = () => pinScreen(first ? 'أكّد الرمز' : 'اختار رمز من 4 أرقام', first ? 'اكتبه مرة ثانية' : 'هذا الرمز يفتح حبر والمحادثات المقفلة. لا تنساه.', null, () => render(), async v => {
+  const step = () => pinScreen(first ? L('أكّد الرمز') : L('اختار رمز من 4 أرقام'), first ? L('اكتبه مرة ثانية') : L('هذا الرمز يفتح حبر والمحادثات المقفلة. لا تنساه.'), null, () => render(), async v => {
     if(!first){ first = v; return step(); }
-    if(v !== first){ first = null; toast('الرمزين مو نفس بعض، جرّب مرة ثانية'); return step(); }
-    PREFS.pin = await sha(v); savePrefs(); toast('انحفظ الرمز ✅'); render(); then && then();
+    if(v !== first){ first = null; toast(L('الرمزين مو نفس بعض، جرّب مرة ثانية')); return step(); }
+    PREFS.pin = await sha(v); savePrefs(); toast(L('انحفظ الرمز ✅')); render(); then && then();
   });
   step();
 }
@@ -477,46 +485,47 @@ function pinScreen(title, msg, ok, cancel, onEntry){
     if(await sha(v) === PREFS.pin){ box.remove(); ok(); } else { dots.classList.remove('shake'); void dots.offsetWidth; dots.classList.add('shake'); v = ''; draw(); } }, 120); };
   box.append(el('div', { class:'big', html:LOGO }), el('b', { style:'font-size:1.2rem', text:title }), el('p', { text:msg }), dots,
     el('div', { class:'keys' }, ['1','2','3','4','5','6','7','8','9'].map(k => el('button', { type:'button', text:k, onclick:() => press(k) })),
-      el('button', { type:'button', class:'t', text:cancel ? 'إلغاء' : '', onclick:() => { if(cancel){ box.remove(); cancel(); } } }), el('button', { type:'button', text:'0', onclick:() => press('0') }),
-      el('button', { type:'button', class:'t', text:'مسح', onclick:() => { v = v.slice(0, -1); draw(); } })));
+      el('button', { type:'button', class:'t', text:cancel ? L('إلغاء') : '', onclick:() => { if(cancel){ box.remove(); cancel(); } } }), el('button', { type:'button', text:'0', onclick:() => press('0') }),
+      el('button', { type:'button', class:'t', text:L('مسح'), onclick:() => { v = v.slice(0, -1); draw(); } })));
   app.append(box);
 }
 
 function settingsScreen(){
-  const bar = el('div', { class:'bar' }, el('button', { class:'ib', type:'button', 'aria-label':'رجوع', text:'→', onclick:() => { VIEW = { screen:'list' }; render(); } }), el('h2', { text:'الإعدادات' }));
+  const bar = el('div', { class:'bar' }, el('button', { class:'ib', type:'button', 'aria-label':L('رجوع'), text:BACK, onclick:() => { VIEW = { screen:'list' }; render(); } }), el('h2', { text:L('الإعدادات') }));
   const sc = el('div', { class:'scroll' }), body = el('div', { class:'ob' });
   const tg = (label, sub, val, set) => { const i = el('input', { type:'checkbox', role:'switch', checked:!!val, 'aria-label':label }); i.onchange = () => set(i.checked, i); return el('label', { class:'tg' }, el('span', {}, label, sub ? el('small', { text:sub }) : null), i); };
   const server = async (k, v, i) => { const s = { online:ME.show_online, seen:ME.show_seen, receipts:ME.receipts }; s[k] = v;
-    try{ await rpc('hb_settings', Object.assign(auth(), { p_online:s.online, p_seen:s.seen, p_receipts:s.receipts })); ME.show_online = s.online; ME.show_seen = s.seen; ME.receipts = s.receipts; LS.set('hb-me', ME); toast('انحفظ ✅'); }
+    try{ await rpc('hb_settings', Object.assign(auth(), { p_online:s.online, p_seen:s.seen, p_receipts:s.receipts })); ME.show_online = s.online; ME.show_seen = s.seen; ME.receipts = s.receipts; LS.set('hb-me', ME); toast(L('انحفظ ✅')); }
     catch(e){ toast(e.message); i.checked = !v; } };
   const m = ME || {};
   body.append(
-    el('div', { class:'card' }, el('b', { text:m.name || 'حسابي' }),
-      el('span', { text:'اسم المستخدم: ' + (m.username ? '@' + m.username : 'ما حطيت') }),
-      el('span', { text:'الهاتف: ' + (m.phone ? '+' + m.phone + (m.phone_ok ? ' ✓' : ' (يتأكد قريبًا)') : 'ما حطيت') }),
-      el('span', { text:'الإيميل: ' + (m.email ? m.email + (m.email_ok ? ' ✓' : ' (يتأكد قريبًا)') : 'ما حطيت') })),
-    m.username ? el('button', { class:'opt', type:'button', onclick:() => copy('@' + m.username, 'انسخ اسمك، أرسله لأصدقائك') }, el('span', { text:'📋 انسخ اسمك عشان يضيفونك' }), el('span', { class:'mono', text:'@' + m.username })) : '',
-    el('div', { class:'sec', text:'🔐 الخصوصية' }),
-    tg('قفل التطبيق', 'يطلب رمزك كل ما تفتح حبر', PREFS.appLock, (v, i) => { if(v) setPin(() => { PREFS.appLock = true; savePrefs(); render(); }), i.checked = false; else { PREFS.appLock = false; savePrefs(); toast('انشال قفل التطبيق'); } }),
-    PREFS.pin ? el('button', { class:'opt', type:'button', text:'🔢 غيّر الرمز', onclick:() => pinScreen('ادخل رمزك الحالي', '', () => setPin(), () => render()) }) : '',
-    el('div', { class:'card' }, el('span', { text:'🔒 المحادثات المقفلة: ' + (PREFS.lockedChats.length || 'ولا وحدة') }), el('small', { class:'sub', text:'تقفل أي محادثة من ⋮ داخلها، وتنفتح برمزك بس. وما يطلع محتواها في الإشعارات.' })),
-    el('div', { class:'sec', text:'👁 الظهور' }),
-    tg('يظهر إني متصل الحين', 'لو قفلته ما يشوف أحد إنك فاتح حبر', m.show_online, (v, i) => server('online', v, i)),
-    tg('آخر ظهور', 'يشوفون متى آخر مرة فتحت حبر', m.show_seen, (v, i) => server('seen', v, i)),
-    tg('إشعار القراءة 👁', 'لو قفلته يشوف المرسل «وصلت» بس، بدون «انقرت» والعدّاد', m.receipts, (v, i) => server('receipts', v, i)),
-    el('div', { class:'sec', text:'🔔 الإشعارات والصوت' }),
-    tg('الإشعارات', 'تنبيه داخل التطبيق لما توصلك رسالة', PREFS.notif, v => { PREFS.notif = v; savePrefs(); }),
-    tg('إظهار نص الرسالة في الإشعار', 'الأفضل تخليه مقفول، عشان ما أحد يقرأ رسائلك من فوق كتفك', PREFS.preview, v => { PREFS.preview = v; savePrefs(); }),
-    el('div', { class:'f' }, el('label', { text:'صوت الإشعار' }), el('div', { class:'chips' }, SOUNDS.map(([k, n]) => el('button', { class:'chip', type:'button', 'aria-pressed':String(PREFS.sound === k), text:(k === 'none' ? '🔇 ' : '🎵 ') + n, onclick:() => { PREFS.sound = k; savePrefs(); const s = PREFS.silent; PREFS.silent = false; play(k); PREFS.silent = s; render(); } })))),
-    tg('🔇 كتم كل الأصوات', 'الإشعارات توصل بدون صوت', PREFS.silent, v => { PREFS.silent = v; savePrefs(); }),
-    el('div', { class:'sec', text:'⏱ المؤقت' }),
-    el('div', { class:'f' }, el('label', { text:'المؤقت الافتراضي للمحادثات الجديدة' }), el('div', { class:'grid2' }, TIMERS.map(([v, n]) => el('button', { class:'opt', type:'button', 'aria-pressed':String(PREFS.def === v), text:n, onclick:() => { PREFS.def = v; savePrefs(); render(); } })))),
-    el('div', { class:'sec', text:'ℹ️ عن حبر' }),
-    el('div', { class:'card' }, el('span', { text:'🔒 رسائلك مشفّرة في هاتفك قبل ما ترسل، ومفتاحها في هاتفك بس. حتى إدارة حبر ما تقدر تقرأها.' }),
-      el('small', { class:'sub', text:'⚠️ لو حذفت التطبيق أو غيّرت الهاتف، حسابك ومفتاحك يروحون معه، وتسجّل من جديد.' })),
-    el('a', { class:'opt', href:'privacy.html', target:'_blank', rel:'noopener', style:'text-decoration:none;color:inherit', text:'📄 الخصوصية والشروط' }),
-    CONTACT ? el('div', { class:'hint', style:'text-align:center', text:'للتواصل مع الإدارة: ' + CONTACT }) : '',
-    el('button', { class:'opt bad', type:'button', text:'🗑️ حذف حسابي وكل رسائلي', onclick:e => sure(e, 'نهائي! اضغط مرة ثانية للتأكيد', async () => {
+    el('div', { class:'card' }, el('b', { text:m.name || L('حسابي') }),
+      el('span', { text:L('اسم المستخدم: ') + (m.username ? '@' + m.username : L('ما حطيت')) }),
+      el('span', { text:L('الهاتف: ') + (m.phone ? '+' + m.phone + (m.phone_ok ? ' ✓' : L(' (يتأكد قريبًا)')) : L('ما حطيت')) }),
+      el('span', { text:L('الإيميل: ') + (m.email ? m.email + (m.email_ok ? ' ✓' : L(' (يتأكد قريبًا)')) : L('ما حطيت')) })),
+    m.username ? el('button', { class:'opt', type:'button', onclick:() => copy('@' + m.username, L('انسخ اسمك، أرسله لأصدقائك')) }, el('span', { text:L('📋 انسخ اسمك عشان يضيفونك') }), el('span', { class:'mono', text:'@' + m.username })) : '',
+    el('div', { class:'sec', text:'🌐 اللغة / Language' }), el('div', { class:'chips', style:'justify-content:center' }, el('button', { class:'chip', type:'button', 'aria-pressed':String(LANG === 'ar'), text:'عربي', onclick:() => setLang('ar') }), el('button', { class:'chip', type:'button', 'aria-pressed':String(LANG === 'en'), text:'English', onclick:() => setLang('en') })),
+    el('div', { class:'sec', text:L('🔐 الخصوصية') }),
+    tg(L('قفل التطبيق'), L('يطلب رمزك كل ما تفتح حبر'), PREFS.appLock, (v, i) => { if(v) setPin(() => { PREFS.appLock = true; savePrefs(); render(); }), i.checked = false; else { PREFS.appLock = false; savePrefs(); toast(L('انشال قفل التطبيق')); } }),
+    PREFS.pin ? el('button', { class:'opt', type:'button', text:L('🔢 غيّر الرمز'), onclick:() => pinScreen(L('ادخل رمزك الحالي'), '', () => setPin(), () => render()) }) : '',
+    el('div', { class:'card' }, el('span', { text:L('🔒 المحادثات المقفلة: ') + (PREFS.lockedChats.length || L('ولا وحدة')) }), el('small', { class:'sub', text:L('تقفل أي محادثة من ⋮ داخلها، وتنفتح برمزك بس. وما يطلع محتواها في الإشعارات.') })),
+    el('div', { class:'sec', text:L('👁 الظهور') }),
+    tg(L('يظهر إني متصل الحين'), L('لو قفلته ما يشوف أحد إنك فاتح حبر'), m.show_online, (v, i) => server('online', v, i)),
+    tg(L('آخر ظهور'), L('يشوفون متى آخر مرة فتحت حبر'), m.show_seen, (v, i) => server('seen', v, i)),
+    tg(L('إشعار القراءة 👁'), L('لو قفلته يشوف المرسل «وصلت» بس، بدون «انقرت» والعدّاد'), m.receipts, (v, i) => server('receipts', v, i)),
+    el('div', { class:'sec', text:L('🔔 الإشعارات والصوت') }),
+    tg(L('الإشعارات'), L('تنبيه داخل التطبيق لما توصلك رسالة'), PREFS.notif, v => { PREFS.notif = v; savePrefs(); }),
+    tg(L('إظهار نص الرسالة في الإشعار'), L('الأفضل تخليه مقفول، عشان ما أحد يقرأ رسائلك من فوق كتفك'), PREFS.preview, v => { PREFS.preview = v; savePrefs(); }),
+    el('div', { class:'f' }, el('label', { text:L('صوت الإشعار') }), el('div', { class:'chips' }, SOUNDS.map(([k, n]) => el('button', { class:'chip', type:'button', 'aria-pressed':String(PREFS.sound === k), text:(k === 'none' ? '🔇 ' : '🎵 ') + n, onclick:() => { PREFS.sound = k; savePrefs(); const s = PREFS.silent; PREFS.silent = false; play(k); PREFS.silent = s; render(); } })))),
+    tg(L('🔇 كتم كل الأصوات'), L('الإشعارات توصل بدون صوت'), PREFS.silent, v => { PREFS.silent = v; savePrefs(); }),
+    el('div', { class:'sec', text:L('⏱ المؤقت') }),
+    el('div', { class:'f' }, el('label', { text:L('المؤقت الافتراضي للمحادثات الجديدة') }), el('div', { class:'grid2' }, TIMERS.map(([v, n]) => el('button', { class:'opt', type:'button', 'aria-pressed':String(PREFS.def === v), text:n, onclick:() => { PREFS.def = v; savePrefs(); render(); } })))),
+    el('div', { class:'sec', text:L('ℹ️ عن حبر') }),
+    el('div', { class:'card' }, el('span', { text:L('🔒 رسائلك مشفّرة في هاتفك قبل ما ترسل، ومفتاحها في هاتفك بس. حتى إدارة حبر ما تقدر تقرأها.') }),
+      el('small', { class:'sub', text:L('⚠️ لو حذفت التطبيق أو غيّرت الهاتف، حسابك ومفتاحك يروحون معه، وتسجّل من جديد.') })),
+    el('a', { class:'opt', href:'privacy.html', target:'_blank', rel:'noopener', style:'text-decoration:none;color:inherit', text:L('📄 الخصوصية والشروط') }),
+    CONTACT ? el('div', { class:'hint', style:'text-align:center', text:L('للتواصل مع الإدارة: ') + CONTACT }) : '',
+    el('button', { class:'opt bad', type:'button', text:L('🗑️ حذف حسابي وكل رسائلي'), onclick:e => sure(e, L('نهائي! اضغط مرة ثانية للتأكيد'), async () => {
       try{ const r = await rpc('hb_delete_account', auth()); dropMedia(r && r.media); }catch(er){ if(!/مو موجود/.test(er.message)) return toast(er.message); }
       ['hb-acct','hb-keys','hb-me','hb-peers','hb-prefs'].forEach(k => { try{ localStorage.removeItem(k); }catch(x){} });
       ACCT = null; KEYS = null; ME = null; PEERS = {}; MSGS = []; PLAIN.clear(); PREFS = Object.assign(PREFS, { pin:null, appLock:false, lockedChats:[], muted:{}, chatTimer:{} }); render(); }) }));
@@ -524,37 +533,38 @@ function settingsScreen(){
 }
 
 function onboard(){
-  const name = el('input', { class:'in', id:'oName', placeholder:'مثال: سالم', maxlength:40 });
+  const name = el('input', { class:'in', id:'oName', placeholder:L('مثال: سالم'), maxlength:40 });
   const u = el('input', { class:'in', id:'oUser', placeholder:'salem', dir:'ltr', autocapitalize:'off', autocomplete:'off', maxlength:20 });
   const ph = el('input', { class:'in', id:'oPhone', placeholder:'9XXXXXXX', inputmode:'tel', dir:'ltr', maxlength:15 });
   const em = el('input', { class:'in', id:'oMail', placeholder:'name@mail.com', type:'email', dir:'ltr', autocapitalize:'off', maxlength:100 });
   const agree = el('input', { type:'checkbox', id:'oAgree' });
-  const go = el('button', { class:'btn', type:'button', text:'ابدأ' });
+  const go = el('button', { class:'btn', type:'button', text:L('ابدأ') });
   go.onclick = async () => {
     const U = u.value.trim().replace(/^@/, '').toLowerCase(), P = ph.value.replace(/\D/g, ''), E = em.value.trim().toLowerCase();
-    if(!U && !P && !E) return toast('اكتب واحد على الأقل: اسم المستخدم أو الهاتف أو الإيميل');
-    if(U && !/^[a-z0-9_.]{3,20}$/.test(U)) return toast('اسم المستخدم: 3 إلى 20 حرف إنجليزي أو رقم');
-    if(P && !/^(968)?[79]\d{7}$/.test(P)) return toast('رقم الهاتف 8 أرقام ويبدأ بـ 9 أو 7');
-    if(E && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(E)) return toast('الإيميل مو صحيح');
-    if(!agree.checked) return toast('لازم توافق على الشروط');
-    go.disabled = true; go.textContent = 'أجهّز مفاتيح التشفير…';
+    if(!U && !P && !E) return toast(L('اكتب واحد على الأقل: اسم المستخدم أو الهاتف أو الإيميل'));
+    if(U && !/^[a-z0-9_.]{3,20}$/.test(U)) return toast(L('اسم المستخدم: 3 إلى 20 حرف إنجليزي أو رقم'));
+    if(P && !/^(968)?[79]\d{7}$/.test(P)) return toast(L('رقم الهاتف 8 أرقام ويبدأ بـ 9 أو 7'));
+    if(E && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(E)) return toast(L('الإيميل مو صحيح'));
+    if(!agree.checked) return toast(L('لازم توافق على الشروط'));
+    go.disabled = true; go.textContent = L('أجهّز مفاتيح التشفير…');
     try{
       KEYS = await newKeys();
       const r = await rpc('hb_register', { p_username:U || null, p_phone:P || null, p_email:E || null, p_name:name.value.trim() || null, p_pubkey:KEYS.pub });
       ACCT = { id:r.id, secret:r.secret }; LS.set('hb-keys', KEYS); LS.set('hb-acct', ACCT);
       ME = await rpc('hb_me', auth()); LS.set('hb-me', ME);
-      VIEW = { screen:'list' }; render(); toast('هلا فيك في حبر ✍️'); sync();
-    }catch(e){ toast(e.message); go.disabled = false; go.textContent = 'ابدأ'; KEYS = null; }
+      VIEW = { screen:'list' }; render(); toast(L('هلا فيك في حبر ✍️')); sync();
+    }catch(e){ toast(e.message); go.disabled = false; go.textContent = L('ابدأ'); KEYS = null; }
   };
   const body = el('div', { class:'ob' },
-    el('div', { class:'big', html:LOGO + 'حبر' }),
-    el('p', { text:'رسائل وصور وفيديو وملفات مشفّرة، تختفي بعد ما تنقرأ.' }),
-    el('div', { class:'f' }, el('label', { for:'oName', text:'اسمك (يشوفه أصدقاؤك، اختياري)' }), name),
-    el('div', { class:'f' }, el('label', { for:'oUser', text:'اسم المستخدم (عشان يلقونك فيه)' }), u),
-    el('div', { class:'f' }, el('label', { for:'oPhone', text:'رقم الهاتف (اختياري)' }), ph),
-    el('div', { class:'f' }, el('label', { for:'oMail', text:'الإيميل (اختياري)' }), em),
-    el('p', { class:'hint', text:'كلها اختيارية، بس لازم واحد على الأقل. البحث الحين يكون باسم المستخدم، والهاتف والإيميل يشتغلون في البحث بعد التأكيد في التحديث الجاي.' }),
-    el('label', { class:'tg', for:'oAgree' }, el('span', {}, 'عمري 17 سنة أو أكثر، وأوافق على الشروط', el('small', {}, 'ممنوع الإساءة والتهديد والمحتوى المخالف. ', el('a', { href:'privacy.html', target:'_blank', rel:'noopener', style:'color:var(--nib)', text:'اقرأ الشروط' }))), agree),
+    el('div', { class:'chips', style:'justify-content:center' }, el('button', { class:'chip', type:'button', 'aria-pressed':String(LANG === 'ar'), text:'عربي', onclick:() => setLang('ar') }), el('button', { class:'chip', type:'button', 'aria-pressed':String(LANG === 'en'), text:'English', onclick:() => setLang('en') })),
+    el('div', { class:'big', html:LOGO + L('حبر') }),
+    el('p', { text:L('رسائل وصور وفيديو وملفات مشفّرة، تختفي بعد ما تنقرأ.') }),
+    el('div', { class:'f' }, el('label', { for:'oName', text:L('اسمك (يشوفه أصدقاؤك، اختياري)') }), name),
+    el('div', { class:'f' }, el('label', { for:'oUser', text:L('اسم المستخدم (عشان يلقونك فيه)') }), u),
+    el('div', { class:'f' }, el('label', { for:'oPhone', text:L('رقم الهاتف (اختياري)') }), ph),
+    el('div', { class:'f' }, el('label', { for:'oMail', text:L('الإيميل (اختياري)') }), em),
+    el('p', { class:'hint', text:L('كلها اختيارية، بس لازم واحد على الأقل. البحث الحين يكون باسم المستخدم، والهاتف والإيميل يشتغلون في البحث بعد التأكيد في التحديث الجاي.') }),
+    el('label', { class:'tg', for:'oAgree' }, el('span', {}, L('عمري 17 سنة أو أكثر، وأوافق على الشروط'), el('small', {}, L('ممنوع الإساءة والتهديد والمحتوى المخالف. '), el('a', { href:'privacy.html', target:'_blank', rel:'noopener', style:'color:var(--nib)', text:L('اقرأ الشروط') }))), agree),
     go);
   app.prepend(el('div', { class:'scroll' }, body));
 }
@@ -582,7 +592,7 @@ async function sync(){
     if(!app.querySelector('.ov, .lock, .viewer')) render();
     markRead();
     if(VIEW.screen === 'chat') refreshPeer(VIEW.chat);
-  }catch(e){ if(/مو موجود على هالهاتف/.test(e.message)){ toast('حسابك انحذف من هالهاتف'); } else if(!ONLINE && !app.querySelector('.ov')) render(); }
+  }catch(e){ if(/مو موجود على هالهاتف/.test(e.message)){ toast(L('حسابك انحذف من هالهاتف')); } else if(!ONLINE && !app.querySelector('.ov')) render(); }
   syncing = false;
 }
 function markRead(){
@@ -604,10 +614,10 @@ function notify(m){
   if(!PREFS.notif || !P || P.blocked || isMuted(id)) return;
   if(VIEW.screen === 'chat' && VIEW.chat === id && document.visibilityState === 'visible') return;
   const pl = PLAIN.get(m.id), locked = PREFS.lockedChats.includes(id);
-  const what = PREFS.preview && !locked && m.kind === 'text' && pl ? pl.t : { text:'رسالة جديدة 🔒', photo:'📷 صورة', video:'🎬 فيديو', file:'📄 ملف' }[m.kind];
+  const what = PREFS.preview && !locked && m.kind === 'text' && pl ? pl.t : { text:L('رسالة جديدة 🔒'), photo:L('📷 صورة'), video:L('🎬 فيديو'), file:L('📄 ملف') }[m.kind];
   app.querySelector('.banner')?.remove();
   const bn = el('button', { class:'banner', type:'button', onclick:() => { bn.remove(); app.querySelectorAll('.ov').forEach(o => o.remove()); openChat(id); } },
-    el('span', { class:'av', style:'width:36px;height:36px;background:' + colorOf(id), text:peerName(P).replace('@', '')[0] }), el('span', {}, el('b', { text:'حبر · ' + peerName(P) }), el('span', { text:what })));
+    el('span', { class:'av', style:'width:36px;height:36px;background:' + colorOf(id), text:peerName(P).replace('@', '')[0] }), el('span', {}, el('b', { text:L('حبر · ') + peerName(P) }), el('span', { text:what })));
   app.append(bn); setTimeout(() => bn.remove(), 4000);
   play(PREFS.sound);
 }
