@@ -1,7 +1,7 @@
-# بناء تطبيق حبر للآيفون على أجهزة ماك في Codemagic ورفعه إلى TestFlight
+# بناء تطبيق لوبو للآيفون على أجهزة ماك في Codemagic ورفعه إلى TestFlight
 workflows:
-  hibr-ios:
-    name: حبر — آيفون
+  loopo-ios:
+    name: لوبو — آيفون
     max_build_duration: 60
     instance_type: mac_mini_m2
     working_directory: ios-app
@@ -10,7 +10,7 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.salemaljabri.hibr
+        bundle_identifier: com.salemaljabri.loopo
       node: 20
       xcode: latest
     scripts:
@@ -30,9 +30,9 @@ workflows:
         script: |
           PLIST=ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Delete :CFBundleDisplayName" $PLIST || true
-          /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string حبر" $PLIST
-          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string حبر يحتاج الصور عشان ترسل صورة أو فيديو مشفّر لصديقك" $PLIST || true
-          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string حبر يحتاج الكاميرا عشان تصوّر وترسل لصديقك" $PLIST || true
+          /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string لوبو" $PLIST
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string لوبو يحتاج الصور عشان ترسل صورة أو فيديو مشفّر لصديقك" $PLIST || true
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string لوبو يحتاج الكاميرا عشان تصوّر وترسل لصديقك" $PLIST || true
           /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion ar" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations array" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations:0 string ar" $PLIST || true

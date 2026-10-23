@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2b47c9">
-<title>حبر — الخصوصية والشروط</title>
+<title>لوبو — الخصوصية والشروط</title>
 <style>
 :root{--bg:#eef2f5;--surface:#fff;--fg:#132029;--muted:#5b6b78;--line:#d3dbe2;--brand:#2b47c9;
   --body:-apple-system,"SF Arabic","Geeza Pro","Segoe UI",Tahoma,system-ui,sans-serif}
@@ -26,14 +26,14 @@ a{color:var(--brand)}
 <body>
 <main id="ar">
   <p style="text-align:left;margin:0"><button type="button" class="lb" data-l="en">English</button></p>
-  <h1>الخصوصية والشروط — حبر</h1>
-  <p class="muted">آخر تحديث: 23 أكتوبر 2026 · حبر من سالم الجابري، مسقط، سلطنة عُمان.</p>
-  <p>حبر تطبيق رسائل بين شخصين، تختفي الرسائل فيه بعد ما تنقرأ بالمؤقت اللي يختاره المرسل. التطبيق للكبار من عمر 17 سنة فما فوق.</p>
+  <h1>الخصوصية والشروط — لوبو</h1>
+  <p class="muted">آخر تحديث: 23 أكتوبر 2026 · لوبو من سالم الجابري، مسقط، سلطنة عُمان.</p>
+  <p>لوبو تطبيق رسائل بين شخصين، تختفي الرسائل فيه بعد ما تنقرأ بالمؤقت اللي يختاره المرسل. التطبيق للكبار من عمر 17 سنة فما فوق.</p>
   <section>
     <h2>1. التشفير</h2>
     <ul>
       <li>كل رسالة وصورة وفيديو وملف تتشفّر في هاتفك قبل ما ترسل، ومفتاح فكّها في هاتفك وهاتف صديقك بس.</li>
-      <li>إدارة حبر ما تقدر تقرأ رسائلك ولا تشوف مرفقاتك.</li>
+      <li>إدارة لوبو ما تقدر تقرأ رسائلك ولا تشوف مرفقاتك.</li>
       <li>مفتاحك محفوظ في هاتفك بس. لو حذفت التطبيق أو غيّرت الهاتف يضيع الحساب، وتسجّل من جديد.</li>
     </ul>
   </section>
@@ -72,18 +72,18 @@ a{color:var(--brand)}
     <h2>6. التواصل</h2>
     <p>للاستفسارات والبلاغات: <a href="mailto:design.omani1@gmail.com" dir="ltr">design.omani1@gmail.com</a></p>
   </section>
-  <p class="muted" style="margin-top:20px"><a href="./">← رجوع لحبر</a></p>
+  <p class="muted" style="margin-top:20px"><a href="./">← رجوع للوبو</a></p>
 </main>
 <main id="en" lang="en" dir="ltr" hidden>
   <p style="text-align:right;margin:0"><button type="button" class="lb" data-l="ar">عربي</button></p>
-  <h1>Privacy &amp; Terms — Hibr</h1>
-  <p class="muted">Last updated: 24 October 2026 · Hibr by Salem Aljabri, Muscat, Sultanate of Oman.</p>
-  <p>Hibr is a one-to-one messaging app where messages disappear after they are read, on a timer the sender chooses. The app is for adults aged 17 and over.</p>
+  <h1>Privacy &amp; Terms — Loopo</h1>
+  <p class="muted">Last updated: 24 October 2026 · Loopo by Salem Aljabri, Muscat, Sultanate of Oman.</p>
+  <p>Loopo is a one-to-one messaging app where messages disappear after they are read, on a timer the sender chooses. The app is for adults aged 17 and over.</p>
   <section>
     <h2>1. Encryption</h2>
     <ul>
       <li>Every message, photo, video and file is encrypted on your phone before it is sent. Only your phone and your friend's phone hold the key to open it.</li>
-      <li>Hibr's administrators cannot read your messages or see your attachments.</li>
+      <li>Loopo's administrators cannot read your messages or see your attachments.</li>
       <li>Your key is stored only on your phone. If you delete the app or change phones, the account is lost and you sign up again.</li>
     </ul>
   </section>
@@ -122,13 +122,13 @@ a{color:var(--brand)}
     <h2>6. Contact</h2>
     <p>Questions and reports: <a href="mailto:design.omani1@gmail.com">design.omani1@gmail.com</a></p>
   </section>
-  <p class="muted" style="margin-top:20px"><a href="./">← Back to Hibr</a></p>
+  <p class="muted" style="margin-top:20px"><a href="./">← Back to Loopo</a></p>
 </main>
 <script>
 (function(){
   let lang = 'ar'; try{ lang = JSON.parse(localStorage.getItem('hb-lang') || '"ar"'); }catch(e){}
   if(/[?&]lang=en/.test(location.search)) lang = 'en';
-  const show = l => { document.getElementById('ar').hidden = l !== 'ar'; document.getElementById('en').hidden = l !== 'en'; document.documentElement.lang = l; document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl'; document.title = l === 'en' ? 'Hibr — Privacy & Terms' : 'حبر — الخصوصية والشروط'; };
+  const show = l => { document.getElementById('ar').hidden = l !== 'ar'; document.getElementById('en').hidden = l !== 'en'; document.documentElement.lang = l; document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl'; document.title = l === 'en' ? 'Loopo — Privacy & Terms' : 'لوبو — الخصوصية والشروط'; };
   document.querySelectorAll('.lb').forEach(b => b.onclick = () => { try{ localStorage.setItem('hb-lang', JSON.stringify(b.dataset.l)); }catch(e){} show(b.dataset.l); });
   show(lang);
 })();

@@ -1,4 +1,4 @@
--- حبر: قاعدة البيانات — انسخ الملف كامل والصقه في SQL Editor (Database مو Logs) واضغط Run. تقدر تشغّله أكثر من مرة.
+-- لوبو (Loopo): قاعدة البيانات — انسخ الملف كامل والصقه في SQL Editor (Database مو Logs) واضغط Run. تقدر تشغّله أكثر من مرة.
 -- الرسائل تنحفظ مشفّرة من الهاتف نفسه (ما نقدر نقرأها هنا)، وتنحذف نهائيًا لما يخلص مؤقتها.
 create extension if not exists pgcrypto with schema extensions;
 
@@ -99,8 +99,8 @@ begin
   if length(v_phone) = 8 then v_phone := '968' || v_phone; end if;
   if v_user is null and v_phone is null and v_mail is null then raise exception 'اكتب واحد على الأقل: اسم المستخدم أو الهاتف أو الإيميل'; end if;
   if v_user is not null and exists (select 1 from hb_users where username = v_user) then raise exception 'اسم المستخدم مأخوذ، جرّب غيره'; end if;
-  if v_phone is not null and exists (select 1 from hb_users where phone = v_phone) then raise exception 'هذا الرقم مسجّل في حبر من قبل'; end if;
-  if v_mail is not null and exists (select 1 from hb_users where email = v_mail) then raise exception 'هذا الإيميل مسجّل في حبر من قبل'; end if;
+  if v_phone is not null and exists (select 1 from hb_users where phone = v_phone) then raise exception 'هذا الرقم مسجّل في لوبو من قبل'; end if;
+  if v_mail is not null and exists (select 1 from hb_users where email = v_mail) then raise exception 'هذا الإيميل مسجّل في لوبو من قبل'; end if;
   if (select count(*) from hb_users where created_at > now() - interval '1 hour') > 100 then raise exception 'ضغط تسجيلات كثير، حاول بعد شوي'; end if;
   insert into hb_users(username, phone, email, name, pubkey, secret_hash)
   values (v_user, v_phone, v_mail, nullif(trim(coalesce(p_name, '')), ''), p_pubkey, crypt(v_secret, gen_salt('bf')))

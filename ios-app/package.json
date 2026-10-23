@@ -1,11 +1,11 @@
 {
-  "name": "hibr-ios",
+  "name": "loopo-ios",
   "version": "1.0.0",
   "private": true,
-  "description": "حبر — تطبيق آيفون (Capacitor)",
+  "description": "لوبو — تطبيق آيفون (Capacitor)",
   "scripts": {
     "build": "rm -rf www && mkdir -p www && cp ../index.html ../privacy.html ../config.js www/",
-    "assets": "capacitor-assets generate --ios --iconBackgroundColor '#2b47c9' --splashBackgroundColor '#2b47c9' --splashBackgroundColorDark '#141a33'"
+    "assets": "capacitor-assets generate --ios --iconBackgroundColor '#1d4ed8' --splashBackgroundColor '#1d4ed8' --splashBackgroundColorDark '#0b1020'"
   },
   "dependencies": {
     "@capacitor/core": "^7.0.0",
