@@ -19,10 +19,13 @@ h2{font-size:1.1rem;margin:26px 0 6px}
 section{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px 18px 14px;margin-top:14px}
 ul{padding-inline-start:20px;margin:6px 0}
 a{color:var(--brand)}
+.lb{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 14px;font:inherit;font-size:.9rem;cursor:pointer}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<main>
+<main id="ar">
+  <p style="text-align:left;margin:0"><button type="button" class="lb" data-l="en">English</button></p>
   <h1>الخصوصية والشروط — حبر</h1>
   <p class="muted">آخر تحديث: 23 أكتوبر 2026 · حبر من سالم الجابري، مسقط، سلطنة عُمان.</p>
   <p>حبر تطبيق رسائل بين شخصين، تختفي الرسائل فيه بعد ما تنقرأ بالمؤقت اللي يختاره المرسل. التطبيق للكبار من عمر 17 سنة فما فوق.</p>
@@ -71,5 +74,64 @@ a{color:var(--brand)}
   </section>
   <p class="muted" style="margin-top:20px"><a href="./">← رجوع لحبر</a></p>
 </main>
+<main id="en" lang="en" dir="ltr" hidden>
+  <p style="text-align:right;margin:0"><button type="button" class="lb" data-l="ar">عربي</button></p>
+  <h1>Privacy &amp; Terms — Hibr</h1>
+  <p class="muted">Last updated: 24 October 2026 · Hibr by Salem Aljabri, Muscat, Sultanate of Oman.</p>
+  <p>Hibr is a one-to-one messaging app where messages disappear after they are read, on a timer the sender chooses. The app is for adults aged 17 and over.</p>
+  <section>
+    <h2>1. Encryption</h2>
+    <ul>
+      <li>Every message, photo, video and file is encrypted on your phone before it is sent. Only your phone and your friend's phone hold the key to open it.</li>
+      <li>Hibr's administrators cannot read your messages or see your attachments.</li>
+      <li>Your key is stored only on your phone. If you delete the app or change phones, the account is lost and you sign up again.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>2. What we store</h2>
+    <ul>
+      <li>What you enter when signing up: username, name, phone and email. All are optional, but at least one is required.</li>
+      <li>Your public encryption key (your friends need it to send you messages).</li>
+      <li>Messages, in encrypted form, until their timer ends. They are then permanently deleted. Unread messages are deleted after 14 days.</li>
+      <li>The last time you opened the app, which you can hide in Settings.</li>
+      <li>No ads, no tracking tools, and we never sell your data.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>3. Rules</h2>
+    <ul>
+      <li>Abuse, threats, harassment, fraud and any content that breaks the laws of the Sultanate of Oman are not allowed.</li>
+      <li>Any content that exploits children is strictly forbidden and will be reported to the authorities.</li>
+      <li>Every chat has “Block” and “Report”. A report reaches us with the messages you choose to attach, because we cannot see the conversation otherwise.</li>
+      <li>We review reports within 24 hours and suspend any account that breaks the rules.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>4. Screenshots</h2>
+    <ul>
+      <li>Disappearing messages cannot stop the other person from taking a screenshot or photographing the screen with another device. Only send what you trust the recipient with.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>5. Deleting your account</h2>
+    <ul>
+      <li>Settings → “Delete my account and all messages”. The account, all messages and all attachments are permanently deleted.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>6. Contact</h2>
+    <p>Questions and reports: <a href="mailto:design.omani1@gmail.com">design.omani1@gmail.com</a></p>
+  </section>
+  <p class="muted" style="margin-top:20px"><a href="./">← Back to Hibr</a></p>
+</main>
+<script>
+(function(){
+  let lang = 'ar'; try{ lang = JSON.parse(localStorage.getItem('hb-lang') || '"ar"'); }catch(e){}
+  if(/[?&]lang=en/.test(location.search)) lang = 'en';
+  const show = l => { document.getElementById('ar').hidden = l !== 'ar'; document.getElementById('en').hidden = l !== 'en'; document.documentElement.lang = l; document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl'; document.title = l === 'en' ? 'Hibr — Privacy & Terms' : 'حبر — الخصوصية والشروط'; };
+  document.querySelectorAll('.lb').forEach(b => b.onclick = () => { try{ localStorage.setItem('hb-lang', JSON.stringify(b.dataset.l)); }catch(e){} show(b.dataset.l); });
+  show(lang);
+})();
+</script>
 </body>
 </html>
