@@ -1,0 +1,10 @@
+{
+  "appId": "com.salemaljabri.hibr",
+  "appName": "حبر",
+  "webDir": "www",
+  "backgroundColor": "#ffffff",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#ffffff"
+  }
+}
